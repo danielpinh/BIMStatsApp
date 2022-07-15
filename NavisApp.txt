@@ -1,0 +1,8 @@
+Adicionar a opção: semanal;
+Ao abrir colocar a data fim como a data fim do projeto;
+Traduzir os termos no gráfico;
+O planejado será agora em LineSeries;
+O executado mantém em ColumnSeries;
+No gráfico PlanejadoxExecutado só irá aparecer Fim Planejado x Fim Atual. Fim Planejando será sempre visível;
+Se o parâmetro User não for double, avisar e jogar zero no valor;
+Manipular tarefas com base no "Task Status" - Propriedade do Navis;

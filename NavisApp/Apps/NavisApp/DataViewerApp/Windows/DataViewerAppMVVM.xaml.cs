@@ -66,17 +66,23 @@ namespace NavisApp
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DateTime earlierDateTime = DataViewerUIService.GetEarlierDate(NavisApp.Properties.NavisworksParameters.PlannedEndParameter);
+            try
+            {
+                DateTime earlierDateTime = DataViewerUIService.GetEarlierDate(NavisApp.Properties.NavisworksParameters.PlannedEndParameter);
 
-            ChartSettingsMVVM.EndDateViewModel.Date = DateTime.Now;
+                ChartSettingsMVVM.EndDateViewModel.Date = DateTime.Now;
 
-            ChartSettingsMVVM.StartDateViewModel.Date = earlierDateTime;
+                ChartSettingsMVVM.StartDateViewModel.Date = earlierDateTime;
 
-            ChartSettingsMVVM.GradacaoXAxis_CB.SelectedIndex = 1;
+                ChartSettingsMVVM.GradacaoXAxis_CB.SelectedIndex = 3;
 
-            DataViewerAppMVVM.MainView.MyXAxis.Separator.Step = 1;
+                DataViewerAppMVVM.MainView.MyXAxis.Separator.Step = 1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
-
         private void InitializeCommands()
         {
             this.ShowInTaskbar = true;
@@ -108,13 +114,11 @@ namespace NavisApp
             ChartSettingsMVVM.Focus();
         }
     }
-
     #region View Models
     public class DateModel
     {
         public DateTime DateTime { get; set; }
         public double Cost { get; set; }
-        public double CustomDate { get; set; }
         public string DisplayName { get; set; }
     }
     public class IsCheckedViewModel : INotifyPropertyChanged

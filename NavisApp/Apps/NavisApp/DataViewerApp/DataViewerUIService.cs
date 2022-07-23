@@ -128,7 +128,7 @@ namespace NavisApp
 
                     DataViewerAppMVVM.MainView.PlanCostCartesianChart.BringIntoView();
 
-                }           
+                }
             }
             catch (Exception ex)
             {
@@ -139,7 +139,6 @@ namespace NavisApp
         {
             try
             {
-                // Iterate over any existing Timeliner Tasks
                 DocumentTimeliner documentTimeliner = Autodesk.Navisworks.Api.Application.MainDocument.GetTimeliner();
 
                 ChartValues<DateModel> chartValues = Utils.GetTimeLinerTwoWeeksByRangeByParameter(documentTimeliner, parameterName,
@@ -177,7 +176,7 @@ namespace NavisApp
                 {
                     AddSeries(parameterName, dateParameter, seriesType, chartValues);
 
-                    DataViewerAppMVVM.Formatter = value => Utils.MonthFormatter(new System.DateTime((long)(value * TimeSpan.FromDays(29).Ticks)));
+                    DataViewerAppMVVM.Formatter = value => Utils.MonthFormatter(new System.DateTime((long)(value * TimeSpan.FromDays(30).Ticks)));
 
                     DataViewerAppMVVM.MainView.MyXAxis.LabelFormatter = DataViewerAppMVVM.Formatter;
 
@@ -265,7 +264,7 @@ namespace NavisApp
             }
             catch { }
         }
-        public static void GroupXAxisChanged()
+        public static void RefreshCostChart()
         {
             try
             {
@@ -276,7 +275,7 @@ namespace NavisApp
                     case "Diário":
 
                         try
-                        {                           
+                        {
                             var dayConfig = Mappers.Xy<DateModel>()
                                 .X(dateModel => dateModel.DateTime.Ticks / TimeSpan.FromDays(1).Ticks)
                                 .Y(dateModel => dateModel.Cost);
@@ -287,13 +286,14 @@ namespace NavisApp
 
                             DataViewerAppMVVM.MainView.PlanCostCartesianChart.Update();
 
-                            foreach (var title in DataViewerAppMVVM.SerieTitles)
+                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 DataViewerUIService.RefreshCostChartByDay(
-                                    NavisApp.Properties.NavisworksParameters.TotalCost,
-                                    title,
+                                    pvm.ParameterName,
+                                    pvm.DateParameterName,
                                     ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date, "ColumnSeries");
+                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    pvm.GraphType);
                             }
                         }
                         catch { }
@@ -312,13 +312,14 @@ namespace NavisApp
 
                             DataViewerAppMVVM.MainView.PlanCostCartesianChart.Update();
 
-                            foreach (var title in DataViewerAppMVVM.SerieTitles)
+                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 DataViewerUIService.RefreshCostChartByTwoWeeks(
-                                    NavisApp.Properties.NavisworksParameters.TotalCost,
-                                    title,
+                                    pvm.ParameterName,
+                                    pvm.DateParameterName,
                                     ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date, "ColumnSeries");
+                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    pvm.GraphType);
                             }
                         }
                         catch { }
@@ -327,7 +328,7 @@ namespace NavisApp
                         try
                         {
                             var dayConfig = Mappers.Xy<DateModel>()
-                                .X(dateModel => dateModel.DateTime.Ticks / TimeSpan.FromDays(29).Ticks)
+                                .X(dateModel => dateModel.DateTime.Ticks / TimeSpan.FromDays(30).Ticks)
                                 .Y(dateModel => dateModel.Cost);
 
                             DataViewerAppMVVM.Series = new SeriesCollection(dayConfig);
@@ -336,13 +337,14 @@ namespace NavisApp
 
                             DataViewerAppMVVM.MainView.PlanCostCartesianChart.Update();
 
-                            foreach (var title in DataViewerAppMVVM.SerieTitles)
+                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 DataViewerUIService.RefreshCostChartByMonth(
-                                    NavisApp.Properties.NavisworksParameters.TotalCost,
-                                    title,
+                                    pvm.ParameterName,
+                                    pvm.DateParameterName,
                                     ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date, "ColumnSeries");
+                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    pvm.GraphType);
                             }
                         }
                         catch { }
@@ -360,13 +362,14 @@ namespace NavisApp
 
                             DataViewerAppMVVM.MainView.PlanCostCartesianChart.Update();
 
-                            foreach (var title in DataViewerAppMVVM.SerieTitles)
+                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 DataViewerUIService.RefreshCostChartByQuarter(
-                                    NavisApp.Properties.NavisworksParameters.TotalCost,
-                                    title,
+                                    pvm.ParameterName,
+                                    pvm.DateParameterName,
                                     ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date, "ColumnSeries");
+                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    pvm.GraphType);
                             }
                         }
                         catch { }
@@ -384,13 +387,14 @@ namespace NavisApp
 
                             DataViewerAppMVVM.MainView.PlanCostCartesianChart.Update();
 
-                            foreach (var title in DataViewerAppMVVM.SerieTitles)
+                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 DataViewerUIService.RefreshCostChartBySemester(
-                                    NavisApp.Properties.NavisworksParameters.TotalCost,
-                                    title,
+                                    pvm.ParameterName,
+                                    pvm.DateParameterName,
                                     ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date, "ColumnSeries");
+                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    pvm.GraphType);
                             }
                         }
                         catch { }
@@ -408,98 +412,21 @@ namespace NavisApp
 
                             DataViewerAppMVVM.MainView.PlanCostCartesianChart.Update();
 
-                            foreach (var title in DataViewerAppMVVM.SerieTitles)
+                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 DataViewerUIService.RefreshCostChartByYear(
-                                    NavisApp.Properties.NavisworksParameters.TotalCost,
-                                    title,
+                                    pvm.ParameterName,
+                                    pvm.DateParameterName,
                                     ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date, "ColumnSeries");
+                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    pvm.GraphType);
                             }
                         }
                         catch { }
                         break;
                 }
-            }
-            catch { }
-        }
-        public static void RefreshCostChart(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType)
-        {
-            try
-            {
-                GradationXAxisViewModel selectedGroupMode = DataViewerAppMVVM.ChartSettingsMVVM.GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
 
-                if (!DataViewerAppMVVM.SerieTitles.Contains(dateParameter))
-                {
-                    DataViewerAppMVVM.SerieTitles.Add(dateParameter);
-                }
-
-                //RemoveSeriesByName(dateParameter);
-
-                switch (selectedGroupMode.Gradation)
-                {
-                    case "Diário":
-                        RefreshCostChartByDay(parameterName, dateParameter, startDateTime, endDateTime, seriesType);
-                        break;
-                    case "Quinzenal":
-                        RefreshCostChartByTwoWeeks(parameterName, dateParameter, startDateTime, endDateTime, seriesType);
-                        break;
-                    case "Mensal":
-                        RefreshCostChartByMonth(parameterName, dateParameter, startDateTime, endDateTime, seriesType);
-                        break;
-                    case "Trimestral":
-                        RefreshCostChartByQuarter(parameterName, dateParameter, startDateTime, endDateTime, seriesType);
-                        break;
-                    case "Semestral":
-                        RefreshCostChartBySemester(parameterName, dateParameter, startDateTime, endDateTime, seriesType);
-                        break;
-                    case "Anual":
-                        RefreshCostChartByYear(parameterName, dateParameter, startDateTime, endDateTime, seriesType);
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message + ex.TargetSite);
-            }
-        }
-        public static void AddCostChartParameter(string parameterName, DateTime startDateTime, DateTime endDateTime)
-        {
-            try
-            {
-                foreach (var title in DataViewerAppMVVM.SerieTitles)
-                {
-                    GradationXAxisViewModel selectedGroupMode = DataViewerAppMVVM.ChartSettingsMVVM.GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
-
-                    if (!DataViewerAppMVVM.SerieTitles.Contains(parameterName))
-                    {
-                        DataViewerAppMVVM.SerieTitles.Add(parameterName);
-                    }
-
-                    //RemoveSeriesByName(parameterName);
-
-                    switch (selectedGroupMode.Gradation)
-                    {
-                        case "Diário":
-                            RefreshCostChartByDay(parameterName, title, startDateTime, endDateTime, "LineSeries");
-                            break;
-                        case "Quinzenal":
-                            RefreshCostChartByTwoWeeks(parameterName, title, startDateTime, endDateTime, "LineSeries");
-                            break;
-                        case "Mensal":
-                            RefreshCostChartByMonth(parameterName, title, startDateTime, endDateTime, "LineSeries");
-                            break;
-                        case "Trimestral":
-                            RefreshCostChartByQuarter(parameterName, title, startDateTime, endDateTime, "LineSeries");
-                            break;
-                        case "Semestral":
-                            RefreshCostChartBySemester(parameterName, title, startDateTime, endDateTime, "LineSeries");
-                            break;
-                        case "Anual":
-                            RefreshCostChartByYear(parameterName, title, startDateTime, endDateTime, "LineSeries");
-                            break;
-                    }
-                }
+                RestoreChartZoom();
             }
             catch { }
         }
@@ -627,6 +554,23 @@ namespace NavisApp
             DataViewerAppMVVM.MainView.PlanCostCartesianChart.AxisY[0].MinValue = 0;
             DataViewerAppMVVM.MainView.PlanCostCartesianChart.AxisY[0].MaxValue = double.NaN;
         }
+
+
+        public static DateTime DateTimeAfterConversion(DateTime dateTime)
+        {
+            long dateTimeTicks = dateTime.Ticks;
+
+            var monthTicks = (long)TimeSpan.FromDays(28).Ticks;
+
+            var dateTimePerMonth = (long)dateTimeTicks / monthTicks;
+
+            var novoValor = (long)dateTimePerMonth * monthTicks;
+
+            DateTime myDate = new DateTime(novoValor);
+
+            return myDate;
+        }
+
         public static void AddSeries(string parameterName, string dateParameter, string seriesType, ChartValues<DateModel> chartValues)
         {
             if (seriesType == "LineSeries")
@@ -637,33 +581,6 @@ namespace NavisApp
             {
                 DataViewerAppMVVM.Series.Add(new ColumnSeries() { Title = dateParameter + "\n/ " + parameterName, Values = chartValues });
             }
-        }
-
-        public static void ParametersChanged(ObservableCollection<ParameterViewModel> addObsCollec, ObservableCollection<ParameterViewModel> RemoveObsCollec)
-        {
-            try
-            {
-                List<ParameterViewModel> addPvms = new List<ParameterViewModel>(addObsCollec);
-                List<ParameterViewModel> RemovePvms = new List<ParameterViewModel>(RemoveObsCollec);
-
-                DataViewerUIService.RestoreChartZoom();
-
-                foreach (var pvm in RemovePvms)
-                {
-                    DataViewerUIService.RemoveSeriesByName(pvm.Name);
-                }
-                foreach (var pvm in addPvms)
-                {
-                    DataViewerUIService.AddCostChartParameter(pvm.ParameterName, ChartSettingsMVVM.StartDateViewModel.Date, ChartSettingsMVVM.EndDateViewModel.Date);
-                }
-
-                DataViewerUIService.RestoreChartZoom();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-
-        }
+        }       
     }
 }

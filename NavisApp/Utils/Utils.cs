@@ -418,14 +418,20 @@ namespace NavisApp
                 foreach (var group in dateModelGroupByMonth)
                 {
                     int key = group.Key;
+
                     double totalMonthCost = 0;
+
                     foreach (var item in group)
                     {
                         totalMonthCost += item.Cost;
                     }
 
                     DateModel dateModel = new DateModel();
-                    dateModel.DateTime = new DateTime(yearKey, key, 15);
+                    dateModel.DateTime = new DateTime(yearKey, key,28);
+
+                    //DateTime dateTimeAfterConversion = DataViewerUIService.DateTimeAfterConversion(dateModel.DateTime);
+                    //MessageBox.Show("Data antes: " + dateModel.DateTime + "\n\n" + "Data depois: " + dateTimeAfterConversion);
+
                     dateModel.Cost = totalMonthCost;
 
                     chartValues.Add(dateModel);
@@ -617,6 +623,10 @@ namespace NavisApp
             else if (parameterName == NavisApp.Properties.NavisworksParameters.LaborCost)
             {
                 cost = (double)task.LaborCost;
+            }
+            else if (parameterName == NavisApp.Properties.NavisworksParameters.EquipmentCost)
+            {
+                cost = (double)task.EquipmentCost;
             }
             else if (parameterName == NavisApp.Properties.NavisworksParameters.SubcontractorCost)
             {

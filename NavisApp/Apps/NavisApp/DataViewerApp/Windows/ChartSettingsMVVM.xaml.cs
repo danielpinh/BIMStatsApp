@@ -95,26 +95,12 @@ namespace NavisApp
         {
             EndDateViewModel.Date = (DateTime)EndDateCalendar.SelectedDate;
             EndDateCalendar.Visibility = Visibility.Hidden;
-
-            //List<string> serieTitles = new List<string>(DataViewerAppMVVM.SerieTitles);
-
-            //foreach (var title in serieTitles)
-            //{
-            //    DataViewerUIService.RefreshCostChart(NavisApp.Properties.NavisworksParameters.TotalCost, title, StartDateViewModel.Date, EndDateViewModel.Date, "ColumnSeries");
-            //}
         }
 
         private void StartDateCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
             StartDateViewModel.Date = (DateTime)StartDateCalendar.SelectedDate;
             StartDateCalendar.Visibility = Visibility.Hidden;
-
-            //List<string> serieTitles = new List<string>(DataViewerAppMVVM.SerieTitles);
-
-            //foreach (var title in serieTitles)
-            //{
-            //    DataViewerUIService.RefreshCostChart(NavisApp.Properties.NavisworksParameters.TotalCost, title, StartDateViewModel.Date, EndDateViewModel.Date, "ColumnSeries");
-            //}
         }
 
         private void Cancel_Button_Click(object sender, RoutedEventArgs e)
@@ -124,9 +110,7 @@ namespace NavisApp
 
         private void Gradacao_CB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //DataViewerUIService.RestoreChartZoom();
-            //ChartSettingsMVVM.GradationXAxisViewModelSelected = GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
-            //DataViewerUIService.GroupXAxisChanged();
+            ChartSettingsMVVM.GradationXAxisViewModelSelected = GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
         }
 
         private void AddParameter_Button_Click(object sender, RoutedEventArgs e)
@@ -169,26 +153,7 @@ namespace NavisApp
 
         private void Apply_Button_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var pvm in AddedParameterViewModels)
-            {
-                MessageBox.Show(pvm.ParameterName + 
-                    "\n" + pvm.DateParameterName +
-                    "\n" + pvm.GraphType +
-                    "\n" + StartDateViewModel.Date.ToString() + 
-                    "\n" + EndDateViewModel.Date.ToString());
-
-
-                DataViewerUIService.RefreshCostChart(
-                    pvm.ParameterName,
-                    pvm.DateParameterName,
-                    StartDateViewModel.Date,
-                    EndDateViewModel.Date,
-                    pvm.GraphType);
-            }
-
-            //DataViewerUIService.RemoveSerieTitlesByName(NavisApp.Properties.NavisworksParameters.PlannedStartParameter);
-            //DataViewerUIService.RemoveSeriesByName(NavisApp.Properties.NavisworksParameters.PlannedStartParameter);
-            //DataViewerUIService.ParametersChanged(AddedParameterViewModels, ExcludedParameterViewModels);
+            DataViewerUIService.RefreshCostChart();
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
@@ -198,7 +163,7 @@ namespace NavisApp
             ChartSettingsMVVM.ParameterViewModelSelected = item as ParameterViewModel;
 
             EditParameterMVVM editParameterMVVM = new EditParameterMVVM();
-            editParameterMVVM.Show();
+            editParameterMVVM.ShowDialog();
         }
     }
     public class ParameterViewModel

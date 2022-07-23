@@ -23,6 +23,26 @@ namespace NavisApp
         {
             try
             {
+                //DateTime dateTime = new DateTime(2022, 12, 28);
+
+                //MessageBox.Show(dateTime.ToString());
+
+                //long dateTimeTicks = dateTime.Ticks;
+
+                //long monthTicks = (long)TimeSpan.FromDays(30).Ticks;
+
+                //long dateTimePerMonth = (long)dateTimeTicks / monthTicks;
+
+                ////MessageBox.Show(dateTimeTicks.ToString() + $" dividido por 30 Ticks {monthTicks.ToString()} é igual a:\n\n" + dateTimePerMonth.ToString());
+
+                //long novoValor = (long)dateTimePerMonth * monthTicks;
+
+                ////MessageBox.Show(dateTimePerMonth.ToString() + "multiplicado por 30 Ticks é igual a:\n\n" + novoValor.ToString());
+
+                //DateTime myDate = new DateTime(novoValor);
+
+                //MessageBox.Show(myDate.ToString());
+
                 DataViewerAppMVVM dataViewerAppMVVM = new DataViewerAppMVVM();
                 dataViewerAppMVVM.Show();
             }

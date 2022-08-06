@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using LiveCharts.Definitions.Series;
+using NavisApp.ViewModels;
 
 namespace NavisApp
 {
@@ -80,56 +81,4 @@ namespace NavisApp
             ParameterName_TextBlock.Text = ChartSettingsMVVM.ParameterViewModelSelected.Name;
         }
     }
-    public class CurrentParameterViewModel : INotifyPropertyChanged
-    {
-        private string _ParameterName { get; set; }
-        public string ParameterName
-        {
-            get { return _ParameterName; }
-            set
-            {
-                _ParameterName = value;
-                // Call OnPropertyChanged whenever the property is updated
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-    }
-
-    public class EditParameterViewModel : INotifyPropertyChanged
-    {
-        private string _GraphType { get; set; }
-        public string GraphType
-        {
-            get { return _GraphType; }
-            set
-            {
-                _GraphType = value;
-                // Call OnPropertyChanged whenever the property is updated
-                OnPropertyChanged();
-            }
-        }
-        private string _GraphTypeLabel { get; set; }
-        public string GraphTypeLabel
-        {
-            get { return _GraphTypeLabel; }
-            set
-            {
-                _GraphTypeLabel = value;
-                // Call OnPropertyChanged whenever the property is updated
-                OnPropertyChanged();
-            }
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-    }
-
 }

@@ -20,11 +20,11 @@
             KeyTip = The key or combination of keys that enables the tab to be activated using the keyboard
                  rather than the mouse. Keytips are made visible by pressing <Alt>.
    -->
-    <RibbonTab Id="ID_CustomTab_1" Title="DataViewer" KeyTip="C1">
+    <RibbonTab Id="ID_CustomTab_1" Title="BIMStats" KeyTip="C1">
         <!-- RibbonPanel provides a distinct panel in the ribbon tab for a group of buttons -->
         <RibbonPanel x:Uid="RibbonPanel_1">
             <!-- RibbonPanelSource defines the content and proerties of the parent RibbonPanel. -->
-            <RibbonPanelSource x:Uid="RibbonPanelSource_RibbonPanel_1" KeyTip="C1" Title="DataViewer">
+            <RibbonPanelSource x:Uid="RibbonPanelSource_RibbonPanel_1" KeyTip="C1" Title="BIMStats">
                 <!-- local:NWRibbonButton indicates a button in the ribbon.
                 Attributes for button include:
                     Size: Standard (default) or Large.

@@ -25,21 +25,24 @@
                   x:Name="Border" 
                   Grid.ColumnSpan="10"
                   CornerRadius="4"
-                  Background="#FFC1C1C1"
-                  BorderBrush="#FFC1C1C1"
+                  Background="#FF737C82"
+                  Cursor="Hand"
+                  BorderBrush="#FF737C82"
                   BorderThickness="0" />
             <Border 
                   x:Name="Border1" 
                   Grid.Column="0"
                   CornerRadius="4" 
                   Margin="0" 
-                  Background="#FFC1C1C1"
-                  BorderBrush="#FFC1C1C1"
+                  Cursor="Hand"
+                  Background="#FF737C82"
+                  BorderBrush="#FF737C82"
                   BorderThickness="0,0,0,0" />
             <Path 
                   x:Name="Arrow"
                   Grid.Column="1"     
-                  Fill="Black"
+                  Fill="White"
+                  Cursor="Hand"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
                   Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
@@ -47,23 +50,23 @@
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
-                <Setter TargetName="Border" Property="Background" Value="#FFC1C1C1" />
+                <Setter TargetName="Border" Property="Background" Value="#FF737C82" />
             </Trigger>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
-                <Setter TargetName="Border1" Property="Background" Value="#FFC1C1C1" />
+                <Setter TargetName="Border1" Property="Background" Value="#FF737C82" />
             </Trigger>
             <Trigger Property="ToggleButton.IsChecked" Value="true">
-                <Setter TargetName="Border" Property="Background" Value="#FFC1C1C1"   />
+                <Setter TargetName="Border" Property="Background" Value="#FF737C82"   />
             </Trigger>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter TargetName="Border" Property="Background" Value="#FFC1C1C1" />
-                <Setter TargetName="Border" Property="BorderBrush" Value="#FFC1C1C1" />
+                <Setter TargetName="Border" Property="Background" Value="#FF737C82" />
+                <Setter TargetName="Border" Property="BorderBrush" Value="#FF737C82" />
                 <Setter TargetName="Arrow" Property="Fill" Value="Black" />
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
     <ControlTemplate x:Key="ComboBoxTextBox" TargetType="{x:Type TextBox}">
-        <Border x:Name="PART_ContentHost" Focusable="False" Background="{TemplateBinding Background}" />
+        <Border x:Name="PART_ContentHost" Cursor="Hand" Focusable="False" Background="{TemplateBinding Background}" />
     </ControlTemplate>
     <Style x:Key="{x:Type ComboBox}" TargetType="{x:Type ComboBox}">
         <Setter Property="SnapsToDevicePixels" Value="true"/>
@@ -72,8 +75,9 @@
         <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
         <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
         <Setter Property="MinWidth" Value="120"/>
+        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="MinHeight" Value="20"/>
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Foreground" Value="White"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBox}">
@@ -99,7 +103,7 @@
                             VerticalAlignment="Center" 
                             Margin="3,3,23,3"
                             Focusable="True" 
-                            Background="#FFC1C1C1"                            
+                            Background="#FF737C82"                            
                             Visibility="Hidden"
                             IsReadOnly="{TemplateBinding IsReadOnly}"/>
                         <Popup 
@@ -115,9 +119,9 @@
                               MaxHeight="{TemplateBinding MaxDropDownHeight}">
                                 <Border 
                                 x:Name="DropDownBorder"
-                                Background="#FFC1C1C1" 
+                                Background="#FF737C82" 
                                 BorderThickness="1"
-                                BorderBrush="#FFC1C1C1"/>
+                                BorderBrush="#FF737C82"/>
                                 <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>
@@ -129,7 +133,7 @@
                             <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Foreground" Value="#FFC1C1C1"  />
+                            <Setter Property="Foreground" Value="#FF737C82"  />
                         </Trigger>
                         <Trigger Property="IsGrouping" Value="true">
                             <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
@@ -152,8 +156,9 @@
     </Style>
     <Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="true"/>
-        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Foreground" Value="White"/>
         <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ComboBoxItem}">
@@ -189,7 +194,7 @@
                     <Border x:Name="border" CornerRadius="7" 
                             BorderBrush="Black"
                             BorderThickness="0"
-                            Background="#FFB8B6B6"
+                            Background="#FF737C82"
                             SnapsToDevicePixels="true">
                         <ContentPresenter x:Name="contentPresenter" 
                                           Focusable="False" 

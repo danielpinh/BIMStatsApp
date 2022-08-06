@@ -11,6 +11,7 @@ using App = Autodesk.Navisworks.Api.Application;
 using NavisApp.ViewModels;
 using LiveCharts.Configurations;
 using LiveCharts.Wpf;
+using NavisApp.Utils;
 
 namespace NavisApp
 {

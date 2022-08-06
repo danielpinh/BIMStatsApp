@@ -107,12 +107,12 @@
     <Compile Include="Apps\NavisApp\BIMStatsApp\Windows\ChartSettingsMVVM.xaml.cs">
       <DependentUpon>ChartSettingsMVVM.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Class1.cs" />
     <Compile Include="Properties\NavisworksParameters.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>NavisworksParameters.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utils\ChartUtils.cs" />
     <Compile Include="Utils\NavisUtils.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <None Include="Apps\NavisApp\CustonRibbon\CustomRibbon.name" />

@@ -21,6 +21,7 @@ using System.Linq;
 using System.Globalization;
 using System.Windows.Media.Effects;
 using NavisApp.ViewModels;
+using NavisApp.Utils;
 
 namespace NavisApp
 {
@@ -35,6 +36,12 @@ namespace NavisApp
 
                 ChartValues<DateModel> chartValues = NavisUtils.GetTimeLinerParametersByYear(documentTimeliner, parameterName,
                     dateParameter, startDateTime, endDateTime);
+
+                // Add zero values to date time possible existing gaps 
+                chartValues = NavisUtils.FixDateTimeGapsByYear(chartValues, startDateTime, endDateTime);
+
+                // Reorder ChartValues
+                chartValues = ChartUtils.SortChartValuesByDateTime(chartValues);
 
                 if (chartValues.Count > 0)
                 {
@@ -56,6 +63,12 @@ namespace NavisApp
                 ChartValues<DateModel> chartValues = NavisUtils.GetTimeLinerParametersBySemester(documentTimeliner, parameterName,
                     dateParameter, startDateTime, endDateTime);
 
+                // Add zero values to date time possible existing gaps 
+                chartValues = NavisUtils.FixDateTimeGapsBySemester(chartValues, startDateTime, endDateTime);
+
+                // Reorder ChartValues
+                chartValues = ChartUtils.SortChartValuesByDateTime(chartValues);
+
                 if (chartValues.Count > 0)
                 {
                     SetChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
@@ -75,6 +88,12 @@ namespace NavisApp
 
                 ChartValues<DateModel> chartValues = NavisUtils.GetTimeLinerParametersByQuarter(documentTimeliner, parameterName,
                     dateParameter, startDateTime, endDateTime);
+
+                // Add zero values to date time possible existing gaps 
+                chartValues = NavisUtils.FixDateTimeGapsByQuarter(chartValues, startDateTime, endDateTime);
+
+                // Reorder ChartValues
+                chartValues = ChartUtils.SortChartValuesByDateTime(chartValues);
 
                 if (chartValues.Count > 0)
                 {
@@ -96,6 +115,12 @@ namespace NavisApp
                 ChartValues<DateModel> chartValues = NavisUtils.GetTimeLinerParametersByTwoWeeks(documentTimeliner, parameterName,
                     dateParameter, startDateTime, endDateTime);
 
+                // Add zero values to date time possible existing gaps 
+                chartValues = NavisUtils.FixDateTimeGapsByTwoWeeks(chartValues, startDateTime, endDateTime);
+
+                // Reorder ChartValues
+                chartValues = ChartUtils.SortChartValuesByDateTime(chartValues);
+
                 if (chartValues.Count > 0)
                 {
                     SetChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
@@ -115,6 +140,12 @@ namespace NavisApp
 
                 ChartValues<DateModel> chartValues = NavisUtils.GetTimeLinerParametersByMonth(documentTimeliner, parameterName,
                     dateParameter, startDateTime, endDateTime);
+
+                // Add zero values to date time gaps 
+                chartValues = NavisUtils.FixDateTimeGapsByMonth(chartValues, startDateTime, endDateTime);
+
+                // Reorder ChartValues
+                chartValues = ChartUtils.SortChartValuesByDateTime(chartValues);
 
                 if (chartValues.Count > 0)
                 {

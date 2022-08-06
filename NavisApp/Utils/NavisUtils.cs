@@ -22,7 +22,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Globalization;
 
-namespace NavisApp
+namespace NavisApp.Utils
 {
     public class NavisUtils
     {
@@ -270,7 +270,7 @@ namespace NavisApp
                         }
                     }
                     else
-                    {
+                    {                       
                         foreach (var item in group)
                         {
                             firstSemesterTotalCost += item.Cost;
@@ -762,9 +762,6 @@ namespace NavisApp
             List<DateModel> dateModels)
         {
             //Get parameter values
-
-            int counter = 0;
-
             foreach (TimelinerTask task in documentTimeliner.Tasks)
             {
                 try
@@ -780,7 +777,6 @@ namespace NavisApp
                     }
                 }
                 catch { }
-
 
                 foreach (TimelinerTask subTask in task.Children)
                 {
@@ -919,6 +915,152 @@ namespace NavisApp
 
             //hide the remaining items
             Autodesk.Navisworks.Api.Application.ActiveDocument.Models.SetHidden(hidden, true);
+        }
+
+        public static ChartValues<DateModel> FixDateTimeGapsByMonth(ChartValues<DateModel> chartValues, DateTime startDateTime, DateTime endDateTime)
+        {
+            List<DateTime> dts = DateTimeUtils.GroupByYearAndMonth(startDateTime, endDateTime);
+
+            foreach (var dt in dts)
+            {
+                bool monthContains = false;
+
+                foreach (var dm in chartValues)
+                {
+                    if (dt.Month == dm.DateTime.Month &&
+                        dt.Year == dm.DateTime.Year)
+                    {
+                        monthContains = true;
+                        break;
+                    }
+                }
+
+                if (!monthContains)
+                {
+                    DateModel dateModel = new DateModel();
+                    dateModel.DateTime = new DateTime(dt.Year, dt.Month, 28);
+                    dateModel.Cost = 0;
+                    chartValues.Add(dateModel);
+                }
+            }
+
+            return chartValues;
+        }
+        public static ChartValues<DateModel> FixDateTimeGapsByYear(ChartValues<DateModel> chartValues, DateTime startDateTime, DateTime endDateTime)
+        {
+            List<DateTime> dts = DateTimeUtils.GroupByYear(startDateTime, endDateTime);
+
+            foreach (var dt in dts)
+            {
+                bool yearContains = false;
+
+                foreach (var dm in chartValues)
+                {
+                    if (dt.Year == dm.DateTime.Year)
+                    {
+                        yearContains = true;
+                        break;
+                    }
+                }
+
+                if (!yearContains)
+                {
+                    DateModel dateModel = new DateModel();
+                    dateModel.DateTime = new DateTime(dt.Year, 06, 28);
+                    dateModel.Cost = 0;
+                    chartValues.Add(dateModel);
+                }
+            }
+
+            return chartValues;
+        }
+        public static ChartValues<DateModel> FixDateTimeGapsBySemester(ChartValues<DateModel> chartValues, DateTime startDateTime, DateTime endDateTime)
+        {
+            List<DateTime> dts = DateTimeUtils.GroupBySemester(startDateTime, endDateTime);
+
+            foreach (var dt in dts)
+            {
+                bool semesterContains = false;
+
+                foreach (var dm in chartValues)
+                {
+                    if (dt.Month == dm.DateTime.Month &&
+                        dt.Year == dm.DateTime.Year)
+                    {
+                        semesterContains = true;
+                        break;
+                    }
+                }
+
+                if (!semesterContains)
+                {
+                    DateModel dateModel = new DateModel();
+                    dateModel.DateTime = new DateTime(dt.Year, dt.Month, 28);
+                    dateModel.Cost = 0;
+                    chartValues.Add(dateModel);
+                }
+            }
+
+            return chartValues;
+        }
+        public static ChartValues<DateModel> FixDateTimeGapsByQuarter(ChartValues<DateModel> chartValues, DateTime startDateTime, DateTime endDateTime)
+        {
+            List<DateTime> dts = DateTimeUtils.GroupByQuarter(startDateTime, endDateTime);
+
+            foreach (var dt in dts)
+            {
+                bool quarterContains = false;
+
+                foreach (var dm in chartValues)
+                {
+                    if (dt.Month == dm.DateTime.Month &&
+                        dt.Year == dm.DateTime.Year)
+                    {
+                        quarterContains = true;
+                        break;
+                    }
+                }
+
+                if (!quarterContains)
+                {
+                    DateModel dateModel = new DateModel();
+                    dateModel.DateTime = new DateTime(dt.Year, dt.Month, 28);
+                    dateModel.Cost = 0;
+                    chartValues.Add(dateModel);
+                }
+            }
+
+            return chartValues;
+        }
+        public static ChartValues<DateModel> FixDateTimeGapsByTwoWeeks(ChartValues<DateModel> chartValues, DateTime startDateTime, DateTime endDateTime)
+        {
+            List<DateTime> dts = DateTimeUtils.GroupByTwoWeeks(startDateTime, endDateTime);
+
+            foreach (var dt in dts)
+            {
+                bool twoWeeksContains = false;
+
+                foreach (var dm in chartValues)
+                {
+                    if (dt.Month == dm.DateTime.Month &&
+                        dt.Year == dm.DateTime.Year &&
+                        dt.Day == dm.DateTime.Day)
+                    {
+                        twoWeeksContains = true;
+                        break;
+                    }
+                }
+
+                if (!twoWeeksContains)
+                {
+                    DateModel dateModel = new DateModel();
+                    dateModel.DateTime = new DateTime(dt.Year, dt.Month, dt.Day);
+                    dateModel.Cost = 0;
+                    chartValues.Add(dateModel);
+                }
+            }
+
+            return chartValues;
         }
     }
 }

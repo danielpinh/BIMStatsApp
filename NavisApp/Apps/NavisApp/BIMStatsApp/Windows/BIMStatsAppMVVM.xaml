@@ -60,7 +60,7 @@
 
                             <!--Zoom="X"-->
 
-                            <lvc:CartesianChart x:Name="PlanCostCartesianChart"
+                            <lvc:CartesianChart x:Name="PlannedExecutedChart"
                                     Series="{Binding Series}"
                                     Width="786"
                                     Height="245"
@@ -71,10 +71,10 @@
                                     Canvas.Top="38"
                                     VerticalAlignment="Top" Margin="0,39,0,0" DataClick="PlanCostCartesianChart_DataClick">
                                 <lvc:CartesianChart.AxisX>
-                                    <lvc:Axis x:Name="MyXAxis" Title="Data" LabelFormatter="{Binding Formatter}" />
+                                    <lvc:Axis x:Name="PlannedExecutedChartXAxis" Title="Data" LabelFormatter="{Binding DateFormatter}" />
                                 </lvc:CartesianChart.AxisX>
                                 <lvc:CartesianChart.AxisY>
-                                    <lvc:Axis x:Name="MyYAxis" Title="Custo (R$)"/>
+                                    <lvc:Axis x:Name="PlannedExecutedChartYAxis" Title="Custo (R$)"/>
                                 </lvc:CartesianChart.AxisY>
                             </lvc:CartesianChart>
                             <Button  x:Name="Settings_Button"
@@ -96,21 +96,61 @@
                             </Button>
                         </Grid>
                     </Border>
-                    <Border Background="White" CornerRadius="6" HorizontalAlignment="Left" Height="130" Width="120" Margin="811,10,0,0" VerticalAlignment="Top">
+                    <Border Margin="10,310,0,0" Background="White" CornerRadius="6" HorizontalAlignment="Left" Width="785" Height="285" VerticalAlignment="Top">
                         <Border.Effect>
                             <DropShadowEffect ShadowDepth="3" BlurRadius="15" Color="Black" Direction="0" Opacity="0.3"/>
                         </Border.Effect>
                         <Grid>
-                            <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,4,0,0"><Run Text="Custo total"/><Run Text=" "/><Run Language="pt-br" Text="| "/><Run Text="R"/><Run Language="pt-br" Text="$"/></TextBlock>
-                            <lvc:Gauge 
-                           x:Name ="TotalCostGaugeChart"
-                           Uses360Mode="True"
-                           From="0" 
-                           FromColor="Gray"         
-                           ToColor="#FFF34237"                        
-                           DataContext="{Binding CostViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           To="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           Value="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10,24,10,4" />
+                            <Border Margin="10,10,0,0" Background="#FF737C82" CornerRadius="6" HorizontalAlignment="Left" Width="736" Height="25" VerticalAlignment="Top">
+                                <Grid HorizontalAlignment="Center" Width="382">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontWeight="Normal" FontFamily="Segoe UI" FontSize="15"><Run Language="pt-br" Text="Curva S"/></TextBlock>
+                                </Grid>
+                            </Border>
+
+                            <!--Zoom="X"-->
+                            <lvc:CartesianChart x:Name="SCurveCartesianChart"
+                                    Series="{Binding Series}"
+                                    Width="786"
+                                    Height="245"
+                                    HorizontalAlignment="Center" 
+                                    Canvas.Left="0"
+                                    Canvas.Bottom="5"
+                                    Canvas.Right="5"
+                                    Canvas.Top="38"
+                                    VerticalAlignment="Top" Margin="0,39,0,0" DataClick="PlanCostCartesianChart_DataClick">
+                                <lvc:CartesianChart.AxisX>
+                                    <lvc:Axis x:Name="SCurveCartesianChartXAxis" Title="Data" LabelFormatter="{Binding DateFormatter}" />
+                                </lvc:CartesianChart.AxisX>
+                                <lvc:CartesianChart.AxisY>
+                                    <lvc:Axis x:Name="SCurveCartesianChartYAxis" Title="Custo (R$)"/>
+                                </lvc:CartesianChart.AxisY>
+                            </lvc:CartesianChart>
+                            <Button  x:Name="SCurveChart_Settings_Button"
+                                         ToolTip="Configurações: Curva S"
+                                         VerticalAlignment="Top"
+                                         HorizontalAlignment="Left" 
+                                         Margin="751,10,0,0"
+                                         Foreground="Black"
+                                         BorderBrush="{x:Null}"
+                                         Background="{x:Null}" 
+                                         Style="{StaticResource RoundedButtonStyle}" 
+                                         Cursor="Hand" 
+                                         Height="25"
+                                         Width="24"
+                                         Click="SCurveChart_Settings_Button_Click">
+                                <StackPanel Orientation="Vertical" Height="25" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                                    <Image Source="/NavisApp;component/Resources/Settings_White_Fill.png" Width="25" Height="25" HorizontalAlignment="Center" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased" />
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Border Background="White" CornerRadius="6" HorizontalAlignment="Left" Height="61" Width="120" Margin="811,10,0,0" VerticalAlignment="Top">
+                        <Border.Effect>
+                            <DropShadowEffect ShadowDepth="3" BlurRadius="15" Color="Black" Direction="0" Opacity="0.3"/>
+                        </Border.Effect>
+                        <Grid>
+                            <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,4,0,0"><Run Text="Custo total"/><Run Text=" "/></TextBlock>
+                            <TextBlock Name="TotalCost_TextBlock" VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,25,0,0" FontSize="18" Width="120" TextAlignment="Center" Foreground="Black"><Run Language="pt-br" Text="R$"/></TextBlock>
                         </Grid>
                     </Border>
                     <Border Background="White" CornerRadius="6" HorizontalAlignment="Left" Height="130" Width="120" Margin="811,165,0,0" VerticalAlignment="Top">
@@ -118,17 +158,18 @@
                             <DropShadowEffect ShadowDepth="3" BlurRadius="15" Color="Black" Direction="0" Opacity="0.3"/>
                         </Border.Effect>
                         <Grid>
-                            <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,4,0,0" TextAlignment="Center"><Run Text="Custo "/><Run Text="Parcial"/><LineBreak/><Run Text="Planejado"/><Run Text=" | "/><Run Text="R"/><Run Text="$"/></TextBlock>
+                            <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,4,0,0" TextAlignment="Center"><Run Text="Custo "/><Run Text="Parcial"/><LineBreak/><Run Text="Planejado"/><Run Text=" "/></TextBlock>
                             <lvc:Gauge 
-                           x:Name ="PartialCostGaugeChart" 
+                           x:Name ="PlannedPartialCostGaugeChart" 
                             Margin="5,32,5,0"
                            Uses360Mode="False"
+                           LabelsVisibility="Collapsed"
                            From="0" 
-                           FromColor="Gray"         
-                           ToColor="#FFF34237"                        
+                           FromColor="#FFF34237"                    
+                           ToColor="#FFF34237" 
                            DataContext="{Binding CostViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                            To="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                           Value="{Binding PartialCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                           Value="{Binding Path=PlannedPartialCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                     </Border>
                     <Border Background="White"  CornerRadius="6" HorizontalAlignment="Left" Height="130" Width="120" Margin="811,310,0,0" VerticalAlignment="Top">
@@ -137,14 +178,17 @@
                         </Border.Effect>
                         <Grid>
                             <lvc:Gauge 
-                            x:Name ="PartialCostGaugeChart_Copy" 
+                            x:Name ="ExecutedPartialCostGaugeChart" 
                             Margin="5,38,5,0"
+                            FromColor="Black"  
+                            LabelsVisibility="Collapsed"
+                            ToColor="Black"                        
                             Uses360Mode="False"
                             From="0" 
                             DataContext="{Binding CostViewModel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             To="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                            Value="{Binding PartialCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" RenderTransformOrigin="0.523,0.455" />
-                            <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,4,0,0" TextAlignment="Center"><Run Text="Custo "/><Run Text="Parcial"/><LineBreak/><Run Text="Executad"/><Run Text="o "/><Run Text="| "/><Run Text="R"/><Run Text="$"/></TextBlock>
+                            Value="{Binding Path=ExecutedPartialCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" RenderTransformOrigin="0.523,0.455" />
+                            <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,4,0,0" TextAlignment="Center"><Run Text="Custo "/><Run Text="Parcial"/><LineBreak/><Run Text="Executad"/><Run Text="o "/></TextBlock>
                         </Grid>
                     </Border>
                     <Border Background="White"  CornerRadius="6" HorizontalAlignment="Left" Height="130" Width="120" Margin="811,456,0,0" VerticalAlignment="Top">
@@ -163,6 +207,15 @@
                             To="{Binding TotalCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                             Value="{Binding PartialCost, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" RenderTransformOrigin="0.523,0.455" />
                             <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,4,0,0" TextAlignment="Center"><Run Text="Custo "/><Run Text="Parcial"/><LineBreak/><Run Text="Executad"/><Run Text="o "/><Run Text="| "/><Run Text="R"/><Run Text="$"/></TextBlock>
+                        </Grid>
+                    </Border>
+                    <Border Background="White" CornerRadius="6" HorizontalAlignment="Left" Height="61" Width="120" Margin="811,87,0,0" VerticalAlignment="Top">
+                        <Border.Effect>
+                            <DropShadowEffect ShadowDepth="3" BlurRadius="15" Color="Black" Direction="0" Opacity="0.3"/>
+                        </Border.Effect>
+                        <Grid>
+                            <TextBlock VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,4,0,0"><Run Language="pt-br" Text="Balanço"/></TextBlock>
+                            <TextBlock x:Name="DiffCost_TextBlock" VerticalAlignment="Top" HorizontalAlignment="Center" FontWeight="Bold" FontFamily="Segoe UI" Margin="0,25,0,0" FontSize="18" Width="120" TextAlignment="Center" Foreground="Black"><Run Language="pt-br" Text="R$"/></TextBlock>
                         </Grid>
                     </Border>
 

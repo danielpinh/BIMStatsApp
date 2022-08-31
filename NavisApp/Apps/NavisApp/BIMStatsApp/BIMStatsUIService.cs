@@ -27,7 +27,44 @@ namespace NavisApp
 {
     public class BIMStatsUIService
     {
-        public static void RefreshCostChartByYear(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
+        public static void SetGaugeChartValues()
+        {
+            DocumentTimeliner documentTimeliner = Autodesk.Navisworks.Api.Application.MainDocument.GetTimeliner();
+
+            BIMStatsAppMVVM.CostViewModel.TotalCost = NavisUtils.GetTotalCost();
+            BIMStatsAppMVVM.CostViewModel.TotalCostCurrency = BIMStatsAppMVVM.CostViewModel.TotalCost.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"));
+            BIMStatsAppMVVM.MainView.TotalCost_TextBlock.Text = BIMStatsAppMVVM.CostViewModel.TotalCostCurrency;
+
+            BIMStatsAppMVVM.CostViewModel.PlannedPartialCost = NavisUtils.GetCostByDateTimeRange(documentTimeliner,
+                NavisApp.Properties.NavisworksParameters.TotalCost,
+                NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
+                PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date,
+                PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date);
+
+            BIMStatsAppMVVM.CostViewModel.ExecutedPartialCost = NavisUtils.GetCostByDateTimeRange(documentTimeliner,
+                NavisApp.Properties.NavisworksParameters.TotalCost,
+                NavisApp.Properties.NavisworksParameters.ActualEndParameter,
+                PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date,
+                PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date);
+
+            double balance = BIMStatsAppMVVM.CostViewModel.PlannedPartialCost - BIMStatsAppMVVM.CostViewModel.ExecutedPartialCost;
+
+            if (balance < 0)
+            {
+                BIMStatsAppMVVM.MainView.DiffCost_TextBlock.Foreground = new SolidColorBrush(Colors.IndianRed);
+            }
+            else if (balance == 0)
+            {
+                BIMStatsAppMVVM.MainView.DiffCost_TextBlock.Foreground = new SolidColorBrush(Colors.Black);
+            }
+            else 
+            {
+                BIMStatsAppMVVM.MainView.DiffCost_TextBlock.Foreground = new SolidColorBrush(Colors.ForestGreen);
+            }
+
+            BIMStatsAppMVVM.MainView.DiffCost_TextBlock.Text = balance.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"));
+        }
+        public static void RefreshPlannedExecutedChartByYear(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
         {
             try
             {
@@ -45,7 +82,7 @@ namespace NavisApp
 
                 if (chartValues.Count > 0)
                 {
-                    SetChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
+                    SetPlannedExecutedChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
                 }
             }
             catch (Exception ex)
@@ -53,7 +90,7 @@ namespace NavisApp
                 MessageBox.Show(ex.Message);
             }
         }
-        public static void RefreshCostChartBySemester(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
+        public static void RefreshPlannedExecutedChartBySemester(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
         {
             try
             {
@@ -71,7 +108,7 @@ namespace NavisApp
 
                 if (chartValues.Count > 0)
                 {
-                    SetChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
+                    SetPlannedExecutedChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
                 }
             }
             catch (Exception ex)
@@ -79,7 +116,7 @@ namespace NavisApp
                 MessageBox.Show(ex.Message);
             }
         }
-        public static void RefreshCostChartByQuarter(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
+        public static void RefreshPlannedExecutedChartByQuarter(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
         {
             try
             {
@@ -98,7 +135,7 @@ namespace NavisApp
                 if (chartValues.Count > 0)
                 {
 
-                    SetChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
+                    SetPlannedExecutedChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
                 }
             }
             catch (Exception ex)
@@ -106,7 +143,7 @@ namespace NavisApp
                 MessageBox.Show(ex.Message);
             }
         }
-        public static void RefreshCostChartByTwoWeeks(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
+        public static void RefreshPlannedExecutedChartByTwoWeeks(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
         {
             try
             {
@@ -123,7 +160,7 @@ namespace NavisApp
 
                 if (chartValues.Count > 0)
                 {
-                    SetChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
+                    SetPlannedExecutedChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
                 }
             }
             catch (Exception ex)
@@ -131,7 +168,7 @@ namespace NavisApp
                 MessageBox.Show("RefreshCostChartByTwoWeeks\n\n" + ex.Message + ex.TargetSite);
             }
         }
-        public static void RefreshCostChartByMonth(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
+        public static void RefreshPlannedExecutedChartByMonth(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
         {
             try
             {
@@ -142,14 +179,14 @@ namespace NavisApp
                     dateParameter, startDateTime, endDateTime);
 
                 // Add zero values to date time gaps 
-                chartValues = NavisUtils.FixDateTimeGapsByMonth(chartValues, startDateTime, endDateTime);
+                chartValues = NavisUtils.FixPlannedExecutedChartDateTimeGapsByMonth(chartValues, startDateTime, endDateTime);
 
                 // Reorder ChartValues
                 chartValues = ChartUtils.SortChartValuesByDateTime(chartValues);
 
                 if (chartValues.Count > 0)
                 {
-                    SetChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
+                    SetPlannedExecutedChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
                 }
             }
             catch (Exception ex)
@@ -158,7 +195,34 @@ namespace NavisApp
             }
         }
 
-        public static void RefreshCostChartByDay(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
+        public static void RefreshSCurveChartByMonth(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
+        {
+            try
+            {
+                // Iterate over any existing Timeliner Tasks
+                DocumentTimeliner documentTimeliner = Autodesk.Navisworks.Api.Application.MainDocument.GetTimeliner();
+
+                ChartValues<DateModel> chartValues = NavisUtils.GetAccumulatedTimeLinerParametersByMonth(documentTimeliner, parameterName,
+                    dateParameter, startDateTime, endDateTime);
+
+                // Add zero values to date time gaps 
+                chartValues = NavisUtils.FixSCurveChartDateTimeGapsByMonth(chartValues, startDateTime, endDateTime);
+
+                // Reorder ChartValues
+                chartValues = ChartUtils.SortChartValuesByDateTime(chartValues);
+
+                if (chartValues.Count > 0)
+                {
+                    SetSCurveChartSeries(parameterName, dateParameter,  seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public static void RefreshPlannedExecutedChartByDay(string parameterName, string dateParameter, DateTime startDateTime, DateTime endDateTime, string seriesType, Brush colorFill, Brush colorPoint)
         {
             try
             {
@@ -170,7 +234,7 @@ namespace NavisApp
 
                 if (chartValues.Count > 0)
                 {
-                    SetChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
+                    SetPlannedExecutedChartSeries(parameterName, dateParameter, startDateTime, endDateTime, seriesType, documentTimeliner, chartValues, colorFill, colorPoint);
                 }
             }
             catch (Exception ex)
@@ -178,7 +242,7 @@ namespace NavisApp
                 MessageBox.Show("RefreshCostChartByDay\n\n"+ ex.Message + ex.TargetSite);
             }
         }
-        public static void SetChartSeries(
+        public static void SetPlannedExecutedChartSeries(
             string parameterName,
             string dateParameter,
             DateTime startDateTime,
@@ -191,14 +255,25 @@ namespace NavisApp
         {
             AddSeries(parameterName, dateParameter, seriesType, chartValues, chartFillColor, pointForegroundColor);
 
-            BIMStatsAppMVVM.MainView.MyXAxis.LabelFormatter = BIMStatsAppMVVM.Formatter;
+            BIMStatsAppMVVM.MainView.PlannedExecutedChartXAxis.LabelFormatter = BIMStatsAppMVVM.DateFormatter;
 
-            BIMStatsAppMVVM.CostViewModel.PartialCost = NavisUtils.GetPlannedPartialCost(documentTimeliner, startDateTime, endDateTime);
-
-            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.BringIntoView();
+            BIMStatsAppMVVM.MainView.PlannedExecutedChart.BringIntoView();
         }
+        public static void SetSCurveChartSeries(
+            string parameterName,
+            string dateParameter,
+            string seriesType,
+            DocumentTimeliner documentTimeliner,
+            ChartValues<DateModel> chartValues,
+            Brush chartFillColor,
+            Brush pointForegroundColor)
+        {
+            AddSeries(parameterName, dateParameter, seriesType, chartValues, chartFillColor, pointForegroundColor);
 
+            BIMStatsAppMVVM.MainView.SCurveCartesianChartXAxis.LabelFormatter = BIMStatsAppMVVM.DateFormatter;
 
+            BIMStatsAppMVVM.MainView.SCurveCartesianChart.BringIntoView();
+        }
         public static void RemoveSeriesByName(string parameterName)
         {
             try
@@ -243,11 +318,53 @@ namespace NavisApp
             }
             catch { }
         }
-        public static void RefreshCostChart()
+        public static void RefreshSCurveChart()
+        {
+            var dayConfig = Mappers.Xy<DateModel>()
+                               .X(dateModel => dateModel.Sequence)
+                               .Y(dateModel => dateModel.Cost);
+
+            BIMStatsAppMVVM.Series = new SeriesCollection(dayConfig);
+
+            BIMStatsAppMVVM.MainView.SCurveCartesianChart.Series = BIMStatsAppMVVM.Series;
+
+            BIMStatsAppMVVM.MainView.SCurveCartesianChart.Update();
+
+            Brush fillColor1 = null;
+            Brush pointColor1 = null;
+            GetParameterDefaultColor(NavisApp.Properties.NavisworksParameters.TotalCost + " | " + NavisApp.Properties.NavisworksParameters.ActualEndParameter, out fillColor1, out pointColor1);
+
+            Brush fillColor2 = null;
+            Brush pointColor2 = null;
+            GetParameterDefaultColor(NavisApp.Properties.NavisworksParameters.TotalCost + " | " + NavisApp.Properties.NavisworksParameters.PlannedEndParameter, out fillColor2, out pointColor2);
+
+            BIMStatsUIService.RefreshSCurveChartByMonth(
+                NavisApp.Properties.NavisworksParameters.TotalCost,
+                NavisApp.Properties.NavisworksParameters.ActualEndParameter,
+                PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date,
+                PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date,
+                "LineSeries",
+                fillColor1,
+                pointColor1
+                );
+
+            BIMStatsUIService.RefreshSCurveChartByMonth(
+               NavisApp.Properties.NavisworksParameters.TotalCost,
+               NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
+               PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date,
+               PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date,
+               "LineSeries",
+               fillColor2,
+               pointColor2
+               );
+
+            RestoreSCurveChartZoom();
+        }
+        public static void RefreshPlannedExecutedChart()
         {
             try
             {
-                GradationXAxisViewModel selectedGroupMode = BIMStatsAppMVVM.ChartSettingsMVVM.GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
+                GradationXAxisViewModel selectedGroupMode = BIMStatsAppMVVM.PlannedExecutedChartSettingsMVVM.GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
 
                 switch (selectedGroupMode.Gradation)
                 {
@@ -261,19 +378,19 @@ namespace NavisApp
 
                             BIMStatsAppMVVM.Series = new SeriesCollection(dayConfig);
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Series = BIMStatsAppMVVM.Series;
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Series = BIMStatsAppMVVM.Series;
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Update();
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Update();
 
-                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
+                            foreach (var pvm in PlannedExecutedChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 SetParameterDefaultColor(pvm);
 
-                                BIMStatsUIService.RefreshCostChartByDay(
+                                BIMStatsUIService.RefreshPlannedExecutedChartByDay(
                                     pvm.ParameterName,
                                     pvm.DateParameterName,
-                                    ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date,
                                     pvm.GraphType,
                                     pvm.FillColor,
                                     pvm.PointColor
@@ -292,19 +409,19 @@ namespace NavisApp
 
                             BIMStatsAppMVVM.Series = new SeriesCollection(dayConfig);
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Series = BIMStatsAppMVVM.Series;
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Series = BIMStatsAppMVVM.Series;
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Update();
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Update();
 
-                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
+                            foreach (var pvm in PlannedExecutedChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 SetParameterDefaultColor(pvm);
 
-                                BIMStatsUIService.RefreshCostChartByTwoWeeks(
+                                BIMStatsUIService.RefreshPlannedExecutedChartByTwoWeeks(
                                     pvm.ParameterName,
                                     pvm.DateParameterName,
-                                    ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date,
                                     pvm.GraphType,
                                     pvm.FillColor,
                                     pvm.PointColor
@@ -322,19 +439,19 @@ namespace NavisApp
 
                             BIMStatsAppMVVM.Series = new SeriesCollection(dayConfig);
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Series = BIMStatsAppMVVM.Series;
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Series = BIMStatsAppMVVM.Series;
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Update();
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Update();
 
-                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
+                            foreach (var pvm in PlannedExecutedChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 SetParameterDefaultColor(pvm);
 
-                                BIMStatsUIService.RefreshCostChartByMonth(
+                                BIMStatsUIService.RefreshPlannedExecutedChartByMonth(
                                     pvm.ParameterName,
                                     pvm.DateParameterName,
-                                    ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date,
                                     pvm.GraphType,
                                     pvm.FillColor,
                                     pvm.PointColor
@@ -355,19 +472,19 @@ namespace NavisApp
 
                             BIMStatsAppMVVM.Series = new SeriesCollection(dayConfig);
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Series = BIMStatsAppMVVM.Series;
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Series = BIMStatsAppMVVM.Series;
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Update();
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Update();
 
-                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
+                            foreach (var pvm in PlannedExecutedChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 SetParameterDefaultColor(pvm);
 
-                                BIMStatsUIService.RefreshCostChartByQuarter(
+                                BIMStatsUIService.RefreshPlannedExecutedChartByQuarter(
                                     pvm.ParameterName,
                                     pvm.DateParameterName,
-                                    ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date,
                                     pvm.GraphType,
                                     pvm.FillColor,
                                     pvm.PointColor
@@ -385,19 +502,19 @@ namespace NavisApp
 
                             BIMStatsAppMVVM.Series = new SeriesCollection(dayConfig);
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Series = BIMStatsAppMVVM.Series;
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Series = BIMStatsAppMVVM.Series;
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Update();
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Update();
 
-                            foreach (var pvm in ChartSettingsMVVM.AddedParameterViewModels)
+                            foreach (var pvm in PlannedExecutedChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 SetParameterDefaultColor(pvm);
 
-                                BIMStatsUIService.RefreshCostChartBySemester(
+                                BIMStatsUIService.RefreshPlannedExecutedChartBySemester(
                                     pvm.ParameterName,
                                     pvm.DateParameterName,
-                                    ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date,
                                     pvm.GraphType,
                                     pvm.FillColor,
                                     pvm.PointColor
@@ -415,19 +532,19 @@ namespace NavisApp
 
                             BIMStatsAppMVVM.Series = new SeriesCollection(dayConfig);
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Series = BIMStatsAppMVVM.Series;
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Series = BIMStatsAppMVVM.Series;
 
-                            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.Update();
+                            BIMStatsAppMVVM.MainView.PlannedExecutedChart.Update();
 
-                            foreach (ParameterViewModel pvm in ChartSettingsMVVM.AddedParameterViewModels)
+                            foreach (ParameterViewModel pvm in PlannedExecutedChartSettingsMVVM.AddedParameterViewModels)
                             {
                                 SetParameterDefaultColor(pvm);
 
-                                BIMStatsUIService.RefreshCostChartByYear(
+                                BIMStatsUIService.RefreshPlannedExecutedChartByYear(
                                     pvm.ParameterName,
                                     pvm.DateParameterName,
-                                    ChartSettingsMVVM.StartDateViewModel.Date,
-                                    ChartSettingsMVVM.EndDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date,
+                                    PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date,
                                     pvm.GraphType,
                                     pvm.FillColor,
                                     pvm.PointColor
@@ -438,7 +555,7 @@ namespace NavisApp
                         break;
                 }
 
-                RestoreChartZoom();
+                RestorePlannedExecutedChartZoom();
             }
             catch { }
         }
@@ -455,7 +572,7 @@ namespace NavisApp
         public static void PopulateListViewParameters()
         {
             //Parameters 
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.TotalCost + " | " + NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
@@ -463,7 +580,7 @@ namespace NavisApp
                     DateParameterName = NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
                     GraphType = "LineSeries"
                 });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.TotalCost + " | " + NavisApp.Properties.NavisworksParameters.ActualEndParameter,
@@ -471,13 +588,13 @@ namespace NavisApp
                     DateParameterName = NavisApp.Properties.NavisworksParameters.ActualEndParameter,
                     GraphType = "LineSeries"
                 });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel 
                 { Name = NavisApp.Properties.NavisworksParameters.MaterialCost + " | " + NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
                     ParameterName = NavisApp.Properties.NavisworksParameters.MaterialCost,
                     DateParameterName = NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
                     GraphType = "LineSeries" });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.MaterialCost + " | " + NavisApp.Properties.NavisworksParameters.ActualEndParameter,
@@ -485,7 +602,7 @@ namespace NavisApp
                     DateParameterName = NavisApp.Properties.NavisworksParameters.ActualEndParameter,
                     GraphType = "LineSeries"
                 });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.LaborCost + " | " + NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
@@ -493,7 +610,7 @@ namespace NavisApp
                     DateParameterName = NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
                     GraphType = "LineSeries"
                 });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.LaborCost + " | " + NavisApp.Properties.NavisworksParameters.ActualEndParameter,
@@ -501,7 +618,7 @@ namespace NavisApp
                     DateParameterName = NavisApp.Properties.NavisworksParameters.ActualEndParameter,
                     GraphType = "LineSeries"
                 });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.EquipmentCost + " | " + NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
@@ -509,7 +626,7 @@ namespace NavisApp
                     DateParameterName = NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
                     GraphType = "LineSeries"
                 });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.EquipmentCost + " | " + NavisApp.Properties.NavisworksParameters.ActualEndParameter,
@@ -517,7 +634,7 @@ namespace NavisApp
                     DateParameterName = NavisApp.Properties.NavisworksParameters.ActualEndParameter,
                     GraphType = "LineSeries"
                 });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.SubcontractorCost + " | " + NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
@@ -525,7 +642,7 @@ namespace NavisApp
                     DateParameterName = NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
                     GraphType = "LineSeries"
                 });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.SubcontractorCost + " | " + NavisApp.Properties.NavisworksParameters.ActualEndParameter,
@@ -533,7 +650,7 @@ namespace NavisApp
                     DateParameterName = NavisApp.Properties.NavisworksParameters.ActualEndParameter,
                     GraphType = "LineSeries"
                 });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.Provided_Progress + " | " + NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
@@ -541,7 +658,7 @@ namespace NavisApp
                     DateParameterName = NavisApp.Properties.NavisworksParameters.PlannedEndParameter,
                     GraphType = "LineSeries"
                 });
-            ChartSettingsMVVM.ExcludedParameterViewModels
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels
                 .Add(new ParameterViewModel
                 {
                     Name = NavisApp.Properties.NavisworksParameters.Provided_Progress + " | " + NavisApp.Properties.NavisworksParameters.ActualEndParameter,
@@ -550,31 +667,38 @@ namespace NavisApp
                     GraphType = "LineSeries"
                 });
 
-            BIMStatsAppMVVM.ChartSettingsMVVM.ExcludedParameters_ListView.ItemsSource = ChartSettingsMVVM.ExcludedParameterViewModels;
-            BIMStatsAppMVVM.ChartSettingsMVVM.AddedParameters_ListView.ItemsSource = ChartSettingsMVVM.AddedParameterViewModels;
+            BIMStatsAppMVVM.PlannedExecutedChartSettingsMVVM.ExcludedParameters_ListView.ItemsSource = PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels;
+            BIMStatsAppMVVM.PlannedExecutedChartSettingsMVVM.AddedParameters_ListView.ItemsSource = PlannedExecutedChartSettingsMVVM.AddedParameterViewModels;
         }
         public static void PopulateComboBoxAxisGradation()
         {
-            //ChartSettingsMVVM
-            ChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Diário" });
-            ChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Quinzenal" });
-            ChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Mensal" });
-            ChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Trimestral" });
-            ChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Semestral" });
-            ChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Anual" });
+            //PlannedExecutedChartSettingsMVVM
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Diário" });
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Quinzenal" });
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Mensal" });
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Trimestral" });
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Semestral" });
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModels.Add(new GradationXAxisViewModel { Gradation = "Anual" });
 
             //Gradation X Axis types
-            ChartSettingsMVVM.GradationXAxisViewModelSelected = ChartSettingsMVVM.GradationXAxisViewModels[0];
-            BIMStatsAppMVVM.ChartSettingsMVVM.GradacaoXAxis_CB.ItemsSource = ChartSettingsMVVM.GradationXAxisViewModels;
-            BIMStatsAppMVVM.ChartSettingsMVVM.GradacaoXAxis_CB.DisplayMemberPath = "Gradation";
-            BIMStatsAppMVVM.ChartSettingsMVVM.GradacaoXAxis_CB.SelectedItem = ChartSettingsMVVM.GradationXAxisViewModelSelected;
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModelSelected = PlannedExecutedChartSettingsMVVM.GradationXAxisViewModels[0];
+            BIMStatsAppMVVM.PlannedExecutedChartSettingsMVVM.GradacaoXAxis_CB.ItemsSource = PlannedExecutedChartSettingsMVVM.GradationXAxisViewModels;
+            BIMStatsAppMVVM.PlannedExecutedChartSettingsMVVM.GradacaoXAxis_CB.DisplayMemberPath = "Gradation";
+            BIMStatsAppMVVM.PlannedExecutedChartSettingsMVVM.GradacaoXAxis_CB.SelectedItem = PlannedExecutedChartSettingsMVVM.GradationXAxisViewModelSelected;
         }
-        public static void RestoreChartZoom()
+        public static void RestorePlannedExecutedChartZoom()
         {
-            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.AxisX[0].MinValue = double.NaN;
-            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.AxisX[0].MaxValue = double.NaN;
-            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.AxisY[0].MinValue = 0;
-            BIMStatsAppMVVM.MainView.PlanCostCartesianChart.AxisY[0].MaxValue = double.NaN;
+            BIMStatsAppMVVM.MainView.PlannedExecutedChart.AxisX[0].MinValue = double.NaN;
+            BIMStatsAppMVVM.MainView.PlannedExecutedChart.AxisX[0].MaxValue = double.NaN;
+            BIMStatsAppMVVM.MainView.PlannedExecutedChart.AxisY[0].MinValue = 0;
+            BIMStatsAppMVVM.MainView.PlannedExecutedChart.AxisY[0].MaxValue = double.NaN;
+        }
+        public static void RestoreSCurveChartZoom()
+        {
+            BIMStatsAppMVVM.MainView.SCurveCartesianChart.AxisX[0].MinValue = double.NaN;
+            BIMStatsAppMVVM.MainView.SCurveCartesianChart.AxisX[0].MaxValue = double.NaN;
+            BIMStatsAppMVVM.MainView.SCurveCartesianChart.AxisY[0].MinValue = 0;
+            BIMStatsAppMVVM.MainView.SCurveCartesianChart.AxisY[0].MaxValue = double.NaN;
         }
         public static void AddSeries(
             string parameterName, 
@@ -593,7 +717,7 @@ namespace NavisApp
                     Foreground = chartFillColor,
                     Stroke = pointForegroundColor,
                     StrokeThickness = 2,
-                    LineSmoothness = 1,
+                    LineSmoothness = 0.5,
                     PointGeometrySize = 8,
                     PointForeground = pointForegroundColor,                    
                 });
@@ -603,15 +727,15 @@ namespace NavisApp
                 BIMStatsAppMVVM.Series.Add(new ColumnSeries() { Title = dateParameter + "\n/ " + parameterName, Values = chartValues });
             }
         }
-        public static void AddParameterToCostChart(string parameterName)
+        public static void AddParameterToPlannedExecutedChart(string parameterName)
         {
             try
             {
-                List<ParameterViewModel> pvms = new List<ParameterViewModel>(ChartSettingsMVVM.ExcludedParameterViewModels);
+                List<ParameterViewModel> pvms = new List<ParameterViewModel>(PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels);
                 ParameterViewModel pvm = pvms.Find(x => x.Name.Contains(parameterName));
                 int index = pvms.IndexOf(pvm);
-                ChartSettingsMVVM.AddedParameterViewModels.Add(ChartSettingsMVVM.ExcludedParameterViewModels[index]);
-                ChartSettingsMVVM.ExcludedParameterViewModels.Remove(ChartSettingsMVVM.ExcludedParameterViewModels[index]);
+                PlannedExecutedChartSettingsMVVM.AddedParameterViewModels.Add(PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels[index]);
+                PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels.Remove(PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels[index]);
             }
             catch { }
         }
@@ -688,14 +812,28 @@ namespace NavisApp
 
             return resultValue;
         }
+        public static string CurrencyFormatterConverter(double value)
+        {
+            string result = "";
 
-        public static string FormatterConverter(double value)
+            try
+            {
+
+                result = value.ToString("C2", CultureInfo.CreateSpecificCulture("pt-BR"));
+
+            }
+            catch { }
+
+            return result;
+        }
+
+        public static string DateFormatterConverter(double value)
         {
             string dateValue = "";
 
             try
             {
-                GradationXAxisViewModel selectedGroupMode = BIMStatsAppMVVM.ChartSettingsMVVM.GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
+                GradationXAxisViewModel selectedGroupMode = BIMStatsAppMVVM.PlannedExecutedChartSettingsMVVM.GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
 
                 switch (selectedGroupMode.Gradation)
                 {
@@ -719,7 +857,7 @@ namespace NavisApp
                         break;
                 }
 
-                RestoreChartZoom();
+                RestorePlannedExecutedChartZoom();
             }
             catch { }
 

@@ -153,31 +153,23 @@ namespace NavisApp.Utils
             }
             return currentDateTime;
         }
-        public static double GetPlannedPartialCost(DocumentTimeliner documentTimeliner, DateTime startDate, DateTime endDate)
+        public static double GetCostByDateTimeRange(DocumentTimeliner documentTimeliner, string parameterName, string dateParameter, DateTime startDate, DateTime endDate)
         {
-            double totalCost = 0;
+            double cost = 0;
 
-            ////Get parameter values
-            //foreach (TimelinerTask task in documentTimeliner.Tasks)
-            //{
-            //    foreach (TimelinerTask subTask in task.Children)
-            //    {
-            //        try
-            //        {
-            //            DateModel dModel = GetTimeLinerParameterValuesByParameter(subTask, NavisApp.Properties.NavisworksParameters.TotalCost, NavisApp.Properties.NavisworksParameters.PlannedEndParameter);
+            foreach (TimelinerTask task in documentTimeliner.Tasks)
+            {
+                DateModel dModel = GetTimeLinerParameterValuesByParameter(task, parameterName, dateParameter);
 
-            //            int dateTimeCompareStart = DateTime.Compare(dModel.DateTime, startDate);
-            //            int dateTimeCompareEnd = DateTime.Compare(dModel.DateTime, endDate);
+                int dateTimeCompareStart = DateTime.Compare(dModel.DateTime, startDate);
+                int dateTimeCompareEnd = DateTime.Compare(dModel.DateTime, endDate);
 
-            //            if (dateTimeCompareStart >= 0 && dateTimeCompareEnd <= 0)
-            //            {
-            //                totalCost += dModel.Cost;
-            //            }
-            //        }
-            //        catch { }
-            //    }
-            //}
-            return totalCost;
+                if (dateTimeCompareStart >= 0 && dateTimeCompareEnd <= 0)
+                {
+                    cost += dModel.Cost;
+                }         
+            }
+            return cost;
         }
         public static ChartValues<DateModel> GetTimeLinerParametersByYear(DocumentTimeliner documentTimeliner,
             string parameterName, 
@@ -429,6 +421,58 @@ namespace NavisApp.Utils
 
             return BIMStatsAppMVVM.ChartValues;
         }
+        public static ChartValues<DateModel> GetAccumulatedTimeLinerParametersByMonth(DocumentTimeliner documentTimeliner,
+            string parameterName,
+            string dateParameter,
+            DateTime startDate,
+            DateTime endDate)
+        {
+            BIMStatsAppMVVM.ChartValues = new ChartValues<DateModel>();
+
+            var dateModels = new List<DateModel>();
+
+            GetDatesByRange(documentTimeliner, parameterName, dateParameter, startDate, endDate, dateModels);
+
+            int counter = 0;
+
+            //Group by year
+            var dateModelGroupByYear = dateModels.GroupBy(x => x.DateTime.Year);
+
+            double totalMonthCost = 0;
+
+            foreach (var groupByYear in dateModelGroupByYear)
+            {
+                int yearKey = groupByYear.Key;
+
+                List<DateModel> dModels = groupByYear.ToList();
+
+                //Group by Month
+                var dateModelGroupByMonth = dModels.GroupBy(x => x.DateTime.Month);
+
+                foreach (var group in dateModelGroupByMonth)
+                {
+                    List<ModelItem> modelItems = new List<ModelItem>();
+
+                    int key = group.Key;
+
+                    foreach (var item in group)
+                    {
+                        totalMonthCost += item.Cost;
+                        modelItems.AddRange(item.ModelItems);
+                    }
+
+                    DateModel dateModel = new DateModel();
+                    dateModel.DateTime = new DateTime(yearKey, key, 28, 0, 0, 0);
+                    dateModel.Sequence = counter++;
+                    dateModel.Cost = totalMonthCost;
+                    dateModel.ModelItems = modelItems;
+
+                    BIMStatsAppMVVM.ChartValues.Add(dateModel);
+                }
+            }
+
+            return BIMStatsAppMVVM.ChartValues;
+        }
         public static ChartValues<DateModel> GetTimeLinerParametersByMonth(DocumentTimeliner documentTimeliner,
             string parameterName, 
             string dateParameter,
@@ -452,13 +496,13 @@ namespace NavisApp.Utils
 
                 List<DateModel> dModels = groupByYear.ToList();
 
-                List<ModelItem> modelItems = new List<ModelItem>();
-
                 //Group by Month
                 var dateModelGroupByMonth = dModels.GroupBy(x => x.DateTime.Month);
 
                 foreach (var group in dateModelGroupByMonth)
                 {
+                    List<ModelItem> modelItems = new List<ModelItem>();
+
                     int key = group.Key;
 
                     double totalMonthCost = 0;
@@ -679,31 +723,24 @@ namespace NavisApp.Utils
             if (dateParameter == NavisApp.Properties.NavisworksParameters.ActualStartParameter)
             {
                 dModel.DateTime = (DateTime)task.ActualStartDate;
-                dModel.Cost = GetCostByParameterName(parameterName, task);
-                dModel.DisplayName = task.DisplayName;
-                dModel.ModelItems = GetExplicitSelection(task);
             }
             else if (dateParameter == NavisApp.Properties.NavisworksParameters.ActualEndParameter)
             {
                 dModel.DateTime = (DateTime)task.ActualEndDate;
-                dModel.Cost = GetCostByParameterName(parameterName, task);
-                dModel.DisplayName = task.DisplayName;
-                dModel.ModelItems = GetExplicitSelection(task);
             }
             else if (dateParameter == NavisApp.Properties.NavisworksParameters.PlannedStartParameter)
             {
                 dModel.DateTime = (DateTime)task.PlannedStartDate;
-                dModel.Cost = GetCostByParameterName(parameterName, task);
-                dModel.DisplayName = task.DisplayName;
-                dModel.ModelItems = GetExplicitSelection(task);
             }
             else if (dateParameter == NavisApp.Properties.NavisworksParameters.PlannedEndParameter)
             {
                 dModel.DateTime = (DateTime)task.PlannedEndDate;
-                dModel.Cost = GetCostByParameterName(parameterName, task);
-                dModel.DisplayName = task.DisplayName;
-                dModel.ModelItems = GetExplicitSelection(task);
             }
+
+            dModel.Cost = GetCostByParameterName(parameterName, task);
+            dModel.DisplayName = task.DisplayName;
+            dModel.ModelItems = GetExplicitSelection(task);
+
             return dModel;
         }
         public static DateTime GetTimeLinerDateTime(TimelinerTask task, string parameterName)
@@ -766,14 +803,15 @@ namespace NavisApp.Utils
             {
                 try
                 {
-                    DateModel dModel = GetTimeLinerParameterValuesByParameter(task, parameterName, dateParameter);
+                    DateModel taskDateModel = new DateModel();  
+                    taskDateModel = GetTimeLinerParameterValuesByParameter(task, parameterName, dateParameter);
 
-                    int dateTimeCompareStart = DateTime.Compare(dModel.DateTime, startDate);
-                    int dateTimeCompareEnd = DateTime.Compare(dModel.DateTime, endDate);
+                    int dateTimeCompareStart = DateTime.Compare(taskDateModel.DateTime, startDate);
+                    int dateTimeCompareEnd = DateTime.Compare(taskDateModel.DateTime, endDate);
 
                     if (dateTimeCompareStart >= 0 && dateTimeCompareEnd <= 0)
                     {
-                        dateModels.Add(dModel);
+                        dateModels.Add(taskDateModel);
                     }
                 }
                 catch { }
@@ -782,14 +820,16 @@ namespace NavisApp.Utils
                 {
                     try
                     {
-                        DateModel dModel = GetTimeLinerParameterValuesByParameter(subTask, parameterName, dateParameter);
+                        DateModel subtaskDateModel = new DateModel();
 
-                        int dateTimeCompareStart = DateTime.Compare(dModel.DateTime, startDate);
-                        int dateTimeCompareEnd = DateTime.Compare(dModel.DateTime, endDate);
+                        subtaskDateModel = GetTimeLinerParameterValuesByParameter(subTask, parameterName, dateParameter);
+
+                        int dateTimeCompareStart = DateTime.Compare(subtaskDateModel.DateTime, startDate);
+                        int dateTimeCompareEnd = DateTime.Compare(subtaskDateModel.DateTime, endDate);
 
                         if (dateTimeCompareStart >= 0 && dateTimeCompareEnd <= 0)
                         {
-                            dateModels.Add(dModel);
+                            dateModels.Add(subtaskDateModel);
                         }
                     }
                     catch { }
@@ -917,7 +957,7 @@ namespace NavisApp.Utils
             Autodesk.Navisworks.Api.Application.ActiveDocument.Models.SetHidden(hidden, true);
         }
 
-        public static ChartValues<DateModel> FixDateTimeGapsByMonth(ChartValues<DateModel> chartValues, DateTime startDateTime, DateTime endDateTime)
+        public static ChartValues<DateModel> FixPlannedExecutedChartDateTimeGapsByMonth(ChartValues<DateModel> chartValues, DateTime startDateTime, DateTime endDateTime)
         {
             List<DateTime> dts = DateTimeUtils.GroupByYearAndMonth(startDateTime, endDateTime);
 
@@ -946,6 +986,36 @@ namespace NavisApp.Utils
 
             return chartValues;
         }
+        public static ChartValues<DateModel> FixSCurveChartDateTimeGapsByMonth(ChartValues<DateModel> chartValues, DateTime startDateTime, DateTime endDateTime)
+        {
+            List<DateTime> dts = DateTimeUtils.GroupByYearAndMonth(startDateTime, endDateTime);
+
+            foreach (var dt in dts)
+            {
+                bool monthContains = false;
+
+                foreach (var dm in chartValues)
+                {
+                    if (dt.Month == dm.DateTime.Month &&
+                        dt.Year == dm.DateTime.Year)
+                    {
+                        monthContains = true;
+                        break;
+                    }
+                }
+
+                if (!monthContains)
+                {
+                    DateModel dateModel = new DateModel();
+                    dateModel.DateTime = new DateTime(dt.Year, dt.Month, 28);
+                    dateModel.Cost = chartValues.Last().Cost;
+                    chartValues.Add(dateModel);
+                }
+            }
+
+            return chartValues;
+        }
+
         public static ChartValues<DateModel> FixDateTimeGapsByYear(ChartValues<DateModel> chartValues, DateTime startDateTime, DateTime endDateTime)
         {
             List<DateTime> dts = DateTimeUtils.GroupByYear(startDateTime, endDateTime);

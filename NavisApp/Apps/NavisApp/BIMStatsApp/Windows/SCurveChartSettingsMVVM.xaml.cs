@@ -21,7 +21,7 @@ using NavisApp.ViewModels;
 
 namespace NavisApp
 {    
-    public partial class ChartSettingsMVVM : Window, IDisposable
+    public partial class SCurveChartSettingsMVVM : Window, IDisposable
     {
         /// <summary>
         /// Cost chart settings window.
@@ -38,7 +38,7 @@ namespace NavisApp
         public static ObservableCollection<ParameterViewModel> ExcludedParameterViewModels { get; set; }
         public static GradationXAxisViewModel GradationXAxisViewModelSelected { get; set; }
         public static ParameterViewModel ParameterViewModelSelected { get; set; }
-        public ChartSettingsMVVM()
+        public SCurveChartSettingsMVVM()
         {
             InitializeComponent();
             InitializeCommands();
@@ -122,7 +122,7 @@ namespace NavisApp
 
         private void Gradacao_CB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ChartSettingsMVVM.GradationXAxisViewModelSelected = GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModelSelected = GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
         }
 
         private void AddParameter_Button_Click(object sender, RoutedEventArgs e)
@@ -165,14 +165,14 @@ namespace NavisApp
 
         private void Apply_Button_Click(object sender, RoutedEventArgs e)
         {
-            BIMStatsUIService.RefreshCostChart();
+            BIMStatsUIService.RefreshPlannedExecutedChart();
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             var item = ((sender as Button)?.Tag as ListViewItem)?.DataContext;
 
-            ChartSettingsMVVM.ParameterViewModelSelected = item as ParameterViewModel;
+            PlannedExecutedChartSettingsMVVM.ParameterViewModelSelected = item as ParameterViewModel;
 
             EditParameterMVVM editParameterMVVM = new EditParameterMVVM();
             editParameterMVVM.ShowDialog();

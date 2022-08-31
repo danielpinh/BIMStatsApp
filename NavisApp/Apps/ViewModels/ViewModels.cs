@@ -28,8 +28,10 @@ namespace NavisApp.ViewModels
     }
     public class CostViewModel : ViewModelBase
     {
-        public double PartialCost { get; set; }
+        public double ExecutedPartialCost { get; set; }
+        public double PlannedPartialCost { get; set; }
         public double TotalCost { get; set; }
+        public string TotalCostCurrency { get; set; }
     }
     public class ParameterViewModel : ViewModelBase
     {

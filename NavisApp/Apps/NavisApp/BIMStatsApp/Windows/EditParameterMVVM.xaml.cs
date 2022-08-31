@@ -63,12 +63,12 @@ namespace NavisApp
         private void Apply_Button_Click(object sender, RoutedEventArgs e)
         {
             EditParameterViewModel graphType = GraphType_CB.SelectedItem as EditParameterViewModel;
-            ChartSettingsMVVM.ParameterViewModelSelected.GraphType = graphType.GraphType;
+            PlannedExecutedChartSettingsMVVM.ParameterViewModelSelected.GraphType = graphType.GraphType;
             this.Close();
         }
         private void EditParameter_Window_Loaded(object sender, RoutedEventArgs e)
         {
-            string graphType = ChartSettingsMVVM.ParameterViewModelSelected.GraphType;
+            string graphType = PlannedExecutedChartSettingsMVVM.ParameterViewModelSelected.GraphType;
 
             foreach (var item in EditParameterViewModels)
             {
@@ -78,7 +78,7 @@ namespace NavisApp
                 }
             }
 
-            ParameterName_TextBlock.Text = ChartSettingsMVVM.ParameterViewModelSelected.Name;
+            ParameterName_TextBlock.Text = PlannedExecutedChartSettingsMVVM.ParameterViewModelSelected.Name;
         }
     }
 }

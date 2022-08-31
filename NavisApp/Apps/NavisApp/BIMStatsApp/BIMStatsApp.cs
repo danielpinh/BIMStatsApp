@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Collections;
 using System.Reflection;
+using NavisApp.Utils;
 
 namespace NavisApp
 {
@@ -22,7 +23,7 @@ namespace NavisApp
         public override int Execute(params string[] parameters)
         {
             try
-            {              
+            {
                 BIMStatsAppMVVM bIMStatsAppMVVM = new BIMStatsAppMVVM();
                 bIMStatsAppMVVM.Show();
             }

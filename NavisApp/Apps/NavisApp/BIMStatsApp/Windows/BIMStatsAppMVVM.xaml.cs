@@ -12,6 +12,7 @@ using NavisApp.ViewModels;
 using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 using NavisApp.Utils;
+using System.Windows.Media;
 
 namespace NavisApp
 {
@@ -23,29 +24,30 @@ namespace NavisApp
         public static BIMStatsAppMVVM MainView { get; set; }
         public static List<string> SerieTitles { get; set; } 
         public static SeriesCollection Series { get; set; }
-        public static Func<double, string> Formatter => BIMStatsUIService.FormatterConverter;
-        public static ChartSettingsMVVM ChartSettingsMVVM { get; set; }
+        public static Func<double, string> DateFormatter => BIMStatsUIService.DateFormatterConverter;
+        public static Func<double, string> CurrencyFormatter => BIMStatsUIService.CurrencyFormatterConverter;
+        public static PlannedExecutedChartSettingsMVVM PlannedExecutedChartSettingsMVVM { get; set; }
         public static CostViewModel CostViewModel { get; set; }
         public static ChartValues<DateModel> ChartValues { get; set; } = new ChartValues<DateModel>();
         public BIMStatsAppMVVM()
         {
-            ChartSettingsMVVM = new ChartSettingsMVVM();
+            PlannedExecutedChartSettingsMVVM = new PlannedExecutedChartSettingsMVVM();
 
             //ViewModels
             CostViewModel = new CostViewModel();
-            ChartSettingsMVVM.StartDateViewModel = new DateViewModel();
-            ChartSettingsMVVM.EndDateViewModel = new DateViewModel();
-            ChartSettingsMVVM.GradationXAxisViewModels = new ObservableCollection<GradationXAxisViewModel>();
-            ChartSettingsMVVM.GradationXAxisViewModelSelected = new GradationXAxisViewModel();
-            ChartSettingsMVVM.ExcludedParameterViewModels = new ObservableCollection<ParameterViewModel>();
-            ChartSettingsMVVM.AddedParameterViewModels = new ObservableCollection<ParameterViewModel>();
-            ChartSettingsMVVM.ParameterViewModelSelected = new ParameterViewModel();
+            PlannedExecutedChartSettingsMVVM.StartDateViewModel = new DateViewModel();
+            PlannedExecutedChartSettingsMVVM.EndDateViewModel = new DateViewModel();
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModels = new ObservableCollection<GradationXAxisViewModel>();
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModelSelected = new GradationXAxisViewModel();
+            PlannedExecutedChartSettingsMVVM.ExcludedParameterViewModels = new ObservableCollection<ParameterViewModel>();
+            PlannedExecutedChartSettingsMVVM.AddedParameterViewModels = new ObservableCollection<ParameterViewModel>();
+            PlannedExecutedChartSettingsMVVM.ParameterViewModelSelected = new ParameterViewModel();
 
             //Properties
-            ChartSettingsMVVM.PlannedStartChecked = new IsCheckedViewModel();
-            ChartSettingsMVVM.ActualStartChecked = new IsCheckedViewModel();
-            ChartSettingsMVVM.PlannedEndChecked = new IsCheckedViewModel();
-            ChartSettingsMVVM.ActualEndChecked = new IsCheckedViewModel();
+            PlannedExecutedChartSettingsMVVM.PlannedStartChecked = new IsCheckedViewModel();
+            PlannedExecutedChartSettingsMVVM.ActualStartChecked = new IsCheckedViewModel();
+            PlannedExecutedChartSettingsMVVM.PlannedEndChecked = new IsCheckedViewModel();
+            PlannedExecutedChartSettingsMVVM.ActualEndChecked = new IsCheckedViewModel();
 
             SerieTitles = new List<string>();
 
@@ -55,23 +57,22 @@ namespace NavisApp
 
             //DateTime dTime = Utils.GetSimulationCurrentDate();
 
-            PlanCostCartesianChart.LegendLocation = LegendLocation.Right;
+            PlannedExecutedChart.LegendLocation = LegendLocation.Right;
+            SCurveCartesianChart.LegendLocation = LegendLocation.Right;
 
             DataContext = this;
 
-            CostViewModel.TotalCost = NavisUtils.GetTotalCost();
+            PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date = DateTime.Now;
+            PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date = DateTime.Now;
 
-            ChartSettingsMVVM.EndDateViewModel.Date = DateTime.Now;
-            ChartSettingsMVVM.StartDateViewModel.Date = DateTime.Now;
-
-            ChartSettingsMVVM.EndDateTextBox.DataContext = ChartSettingsMVVM.EndDateViewModel;
-            ChartSettingsMVVM.StartDateTextBox.DataContext = ChartSettingsMVVM.StartDateViewModel;
+            PlannedExecutedChartSettingsMVVM.EndDateTextBox.DataContext = PlannedExecutedChartSettingsMVVM.EndDateViewModel;
+            PlannedExecutedChartSettingsMVVM.StartDateTextBox.DataContext = PlannedExecutedChartSettingsMVVM.StartDateViewModel;
 
             BIMStatsUIService.PopulateComboBoxAxisGradation();
             BIMStatsUIService.PopulateListViewParameters();
 
-            BIMStatsUIService.AddParameterToCostChart("Custo total | Fim executado");
-            BIMStatsUIService.AddParameterToCostChart("Custo total | Fim planejado");
+            BIMStatsUIService.AddParameterToPlannedExecutedChart("Custo total | Fim executado");
+            BIMStatsUIService.AddParameterToPlannedExecutedChart("Custo total | Fim planejado");
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -79,27 +80,45 @@ namespace NavisApp
             {
                 DateTime earlierDateTime = DateTimeUtils.GetEarlierDate(NavisApp.Properties.NavisworksParameters.PlannedEndParameter);
 
-                ChartSettingsMVVM.EndDateViewModel.Date = DateTime.Now;
+                PlannedExecutedChartSettingsMVVM.EndDateViewModel.Date = DateTime.Now;
 
-                ChartSettingsMVVM.StartDateViewModel.Date = earlierDateTime;
+                PlannedExecutedChartSettingsMVVM.StartDateViewModel.Date = earlierDateTime;
 
-                ChartSettingsMVVM.GradacaoXAxis_CB.SelectedIndex = 2;
+                PlannedExecutedChartSettingsMVVM.GradacaoXAxis_CB.SelectedIndex = 2;
 
-                MainView.MyXAxis.Separator.Step = 1;
+                MainView.PlannedExecutedChartXAxis.Separator.Step = 1;
+                MainView.SCurveCartesianChartXAxis.Separator.Step = 1;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
 
-            BIMStatsUIService.RefreshCostChart();
+            BIMStatsAppMVVM.MainView.PlannedExecutedChartXAxis.Separator.StrokeThickness = 0;
+            BIMStatsAppMVVM.MainView.PlannedExecutedChartYAxis.Separator.StrokeThickness = 1;
+            BIMStatsAppMVVM.MainView.PlannedExecutedChartYAxis.Separator.Stroke = new SolidColorBrush(Colors.LightGray);
+
+            BIMStatsAppMVVM.MainView.SCurveCartesianChartXAxis.Separator.StrokeThickness = 0;
+            BIMStatsAppMVVM.MainView.SCurveCartesianChartYAxis.Separator.StrokeThickness = 1;
+            BIMStatsAppMVVM.MainView.SCurveCartesianChartYAxis.Separator.Stroke = new SolidColorBrush(Colors.LightGray);
+
+
+            BIMStatsAppMVVM.MainView.ExecutedPartialCostGaugeChart.LabelFormatter = BIMStatsAppMVVM.CurrencyFormatter;
+            BIMStatsAppMVVM.MainView.PlannedPartialCostGaugeChart.LabelFormatter = BIMStatsAppMVVM.CurrencyFormatter;
+            BIMStatsAppMVVM.MainView.ExecutedPartialCostGaugeChart.HighFontSize = 11;
+            BIMStatsAppMVVM.MainView.PlannedPartialCostGaugeChart.HighFontSize = 11;
+            BIMStatsAppMVVM.MainView.ExecutedPartialCostGaugeChart.InnerRadius = 40;
+            BIMStatsAppMVVM.MainView.PlannedPartialCostGaugeChart.InnerRadius = 40;
+
+            BIMStatsUIService.SetGaugeChartValues();
+            BIMStatsUIService.RefreshPlannedExecutedChart();
+            BIMStatsUIService.RefreshSCurveChart();
         }
         private void InitializeCommands()
         {
             this.ShowInTaskbar = true;
             this.Topmost = true;
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            this.ResizeMode = ResizeMode.NoResize;
             this.WindowStyle = WindowStyle.None;
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -125,8 +144,8 @@ namespace NavisApp
         }
         private void Settings_Button_Click(object sender, RoutedEventArgs e)
         {
-            ChartSettingsMVVM.Show();
-            ChartSettingsMVVM.Focus();
+            PlannedExecutedChartSettingsMVVM.Show();
+            PlannedExecutedChartSettingsMVVM.Focus();
         }
         private void PlanCostCartesianChart_DataClick(object sender, ChartPoint chartPoint)
         {
@@ -135,10 +154,11 @@ namespace NavisApp
                 DateModel dateModel = chartPoint.Instance as DateModel;
                 NavisUtils.HideUnselectedItems(App.ActiveDocument, dateModel.ModelItems);
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            catch { }
+        }
+        private void SCurveChart_Settings_Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
     #region View Models

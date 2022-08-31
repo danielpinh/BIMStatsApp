@@ -99,13 +99,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Apps\NavisApp\BIMStatsApp\Windows\SCurveChartSettingsMVVM.xaml.cs">
+      <DependentUpon>SCurveChartSettingsMVVM.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Apps\ViewModels\ViewModels.cs" />
     <Compile Include="Apps\NavisApp\BIMStatsApp\BIMStatsUIService.cs" />
     <Compile Include="Apps\NavisApp\BIMStatsApp\Windows\EditParameterMVVM.xaml.cs">
       <DependentUpon>EditParameterMVVM.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Apps\NavisApp\BIMStatsApp\Windows\ChartSettingsMVVM.xaml.cs">
-      <DependentUpon>ChartSettingsMVVM.xaml</DependentUpon>
+    <Compile Include="Apps\NavisApp\BIMStatsApp\Windows\PlannedExecutedChartSettingsMVVM.xaml.cs">
+      <DependentUpon>PlannedExecutedChartSettingsMVVM.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\NavisworksParameters.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -130,6 +133,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Apps\NavisApp\BIMStatsApp\Windows\SCurveChartSettingsMVVM.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Apps\NavisApp\CustonRibbon\CustomRibbon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -142,7 +149,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Apps\NavisApp\BIMStatsApp\Windows\ChartSettingsMVVM.xaml">
+    <Page Include="Apps\NavisApp\BIMStatsApp\Windows\PlannedExecutedChartSettingsMVVM.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

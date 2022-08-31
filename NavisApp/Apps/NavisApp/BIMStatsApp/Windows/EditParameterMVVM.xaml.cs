@@ -17,6 +17,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using LiveCharts.Definitions.Series;
+using NavisApp.ViewModels;
 
 namespace NavisApp
 {
@@ -62,12 +63,12 @@ namespace NavisApp
         private void Apply_Button_Click(object sender, RoutedEventArgs e)
         {
             EditParameterViewModel graphType = GraphType_CB.SelectedItem as EditParameterViewModel;
-            ChartSettingsMVVM.ParameterViewModelSelected.GraphType = graphType.GraphType;
+            PlannedExecutedChartSettingsMVVM.ParameterViewModelSelected.GraphType = graphType.GraphType;
             this.Close();
         }
         private void EditParameter_Window_Loaded(object sender, RoutedEventArgs e)
         {
-            string graphType = ChartSettingsMVVM.ParameterViewModelSelected.GraphType;
+            string graphType = PlannedExecutedChartSettingsMVVM.ParameterViewModelSelected.GraphType;
 
             foreach (var item in EditParameterViewModels)
             {
@@ -77,59 +78,7 @@ namespace NavisApp
                 }
             }
 
-            ParameterName_TextBlock.Text = ChartSettingsMVVM.ParameterViewModelSelected.Name;
+            ParameterName_TextBlock.Text = PlannedExecutedChartSettingsMVVM.ParameterViewModelSelected.Name;
         }
     }
-    public class CurrentParameterViewModel : INotifyPropertyChanged
-    {
-        private string _ParameterName { get; set; }
-        public string ParameterName
-        {
-            get { return _ParameterName; }
-            set
-            {
-                _ParameterName = value;
-                // Call OnPropertyChanged whenever the property is updated
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-    }
-
-    public class EditParameterViewModel : INotifyPropertyChanged
-    {
-        private string _GraphType { get; set; }
-        public string GraphType
-        {
-            get { return _GraphType; }
-            set
-            {
-                _GraphType = value;
-                // Call OnPropertyChanged whenever the property is updated
-                OnPropertyChanged();
-            }
-        }
-        private string _GraphTypeLabel { get; set; }
-        public string GraphTypeLabel
-        {
-            get { return _GraphTypeLabel; }
-            set
-            {
-                _GraphTypeLabel = value;
-                // Call OnPropertyChanged whenever the property is updated
-                OnPropertyChanged();
-            }
-        }
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-    }
-
 }

@@ -16,12 +16,12 @@ using System.Windows.Media;
 
 namespace NavisApp
 {
-    [Plugin("NavisApp", "E4EF13F1 - 3CD4 - 4930 - 9778 - DCAD75A8499A", DisplayName = "NavisApp")]
+    [Plugin("NavisApp", "A203E04B - 6FAA - 4B90 - B928 - F9C3E2413E6", DisplayName = "NavisApp")]
     [RibbonLayout("CustomRibbon.xaml")]
     [RibbonTab("ID_CustomTab_1")]
     [Command("ID_Button_1", 
-        DisplayName = "DataViewer", 
-        LargeIcon = "Graph.png",
+        DisplayName = "BIMStats", 
+        LargeIcon = "BIMStatsLogo_32x32.png",
         ToolTip = "Descrição do comando...")]
     public class CustomRibbonCommandHandler : CommandHandlerPlugin
     {

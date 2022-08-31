@@ -17,10 +17,11 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using LiveCharts.Definitions.Series;
+using NavisApp.ViewModels;
 
 namespace NavisApp
 {    
-    public partial class ChartSettingsMVVM : Window, IDisposable
+    public partial class SCurveChartSettingsMVVM : Window, IDisposable
     {
         /// <summary>
         /// Cost chart settings window.
@@ -37,8 +38,7 @@ namespace NavisApp
         public static ObservableCollection<ParameterViewModel> ExcludedParameterViewModels { get; set; }
         public static GradationXAxisViewModel GradationXAxisViewModelSelected { get; set; }
         public static ParameterViewModel ParameterViewModelSelected { get; set; }
-
-        public ChartSettingsMVVM()
+        public SCurveChartSettingsMVVM()
         {
             InitializeComponent();
             InitializeCommands();
@@ -93,13 +93,25 @@ namespace NavisApp
 
         private void EndDateCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            EndDateViewModel.Date = (DateTime)EndDateCalendar.SelectedDate;
+            DateTime dateTime = (DateTime)EndDateCalendar.SelectedDate;
+            dateTime = dateTime.AddHours(23);
+            dateTime = dateTime.AddMinutes(59);
+            dateTime = dateTime.AddSeconds(59);
+
+            EndDateViewModel.Date = dateTime;
+
             EndDateCalendar.Visibility = Visibility.Hidden;
         }
 
         private void StartDateCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
         {
-            StartDateViewModel.Date = (DateTime)StartDateCalendar.SelectedDate;
+            DateTime dateTime = (DateTime)StartDateCalendar.SelectedDate;
+            dateTime = dateTime.AddHours(23);
+            dateTime = dateTime.AddMinutes(59);
+            dateTime = dateTime.AddSeconds(59);
+
+            StartDateViewModel.Date = dateTime;
+
             StartDateCalendar.Visibility = Visibility.Hidden;
         }
 
@@ -110,7 +122,7 @@ namespace NavisApp
 
         private void Gradacao_CB_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ChartSettingsMVVM.GradationXAxisViewModelSelected = GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
+            PlannedExecutedChartSettingsMVVM.GradationXAxisViewModelSelected = GradacaoXAxis_CB.SelectedItem as GradationXAxisViewModel;
         }
 
         private void AddParameter_Button_Click(object sender, RoutedEventArgs e)
@@ -153,73 +165,17 @@ namespace NavisApp
 
         private void Apply_Button_Click(object sender, RoutedEventArgs e)
         {
-            DataViewerUIService.RefreshCostChart();
+            BIMStatsUIService.RefreshPlannedExecutedChart();
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             var item = ((sender as Button)?.Tag as ListViewItem)?.DataContext;
 
-            ChartSettingsMVVM.ParameterViewModelSelected = item as ParameterViewModel;
+            PlannedExecutedChartSettingsMVVM.ParameterViewModelSelected = item as ParameterViewModel;
 
             EditParameterMVVM editParameterMVVM = new EditParameterMVVM();
             editParameterMVVM.ShowDialog();
         }
     }
-    public class ParameterViewModel
-    {
-        private string _Name { get; set; }
-        public string Name
-        {
-            get { return _Name; }
-            set
-            {
-                _Name = value;
-                // Call OnPropertyChanged whenever the property is updated
-                OnPropertyChanged();
-            }
-        }
-
-        private string _ParameterName { get; set; }
-        public string ParameterName
-        {
-            get { return _ParameterName; }
-            set
-            {
-                _ParameterName = value;
-                // Call OnPropertyChanged whenever the property is updated
-                OnPropertyChanged();
-            }
-        }
-        private string _DateParameterName { get; set; }
-        public string DateParameterName
-        {
-            get { return _DateParameterName; }
-            set
-            {
-                _DateParameterName = value;
-                // Call OnPropertyChanged whenever the property is updated
-                OnPropertyChanged();
-            }
-        }
-
-        private string _GraphType { get; set; }
-        public string GraphType
-        {
-            get { return _GraphType; }
-            set
-            {
-                _GraphType = value;
-                // Call OnPropertyChanged whenever the property is updated
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-    }
-
 }

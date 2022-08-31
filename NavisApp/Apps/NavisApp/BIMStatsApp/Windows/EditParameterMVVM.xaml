@@ -4,10 +4,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:colorpicker="clr-namespace:ColorPicker;assembly=ColorPicker"       
              xmlns:local="clr-namespace:NavisApp"
-             mc:Ignorable="d" Height="172"
+             mc:Ignorable="d" 
              AllowsTransparency="True"
-             WindowStyle="None" Cursor="Hand" Background="{x:Null}" Width="215" MouseDown="EditParameter_Window_MouseDown" Loaded="EditParameter_Window_Loaded" >
+             WindowStyle="None"
+             Cursor="Hand" 
+             Background="Transparent"  
+             MouseDown="EditParameter_Window_MouseDown" 
+             Loaded="EditParameter_Window_Loaded" Height="207" Width="254" >
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,7 +20,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Border CornerRadius="10" BorderThickness="1" BorderBrush="#FF858787" Background="#FFEFEFEF" Margin="0,0,0,0">
+    <Border CornerRadius="10" BorderThickness="2" Width="215" Height="172" BorderBrush="#FF858787" Background="White" Margin="0,0,0,0">
         <Grid Margin="0">
             <ComboBox 
                 x:Name="GraphType_CB" 
@@ -29,10 +34,9 @@
                            Width="134" 
                            Margin="0,31,0,0"
                            HorizontalAlignment="Center" 
-                           RenderTransformOrigin="0.47,-0.302" 
-                           Text="Modelo de exibição"
+                           RenderTransformOrigin="0.47,-0.302"
                            Height="25"
-                           VerticalAlignment="Top"/>
+                           VerticalAlignment="Top"><Run Text="Mo"/><Run Language="pt-br" Text="d"/><Run Text="o de exibição"/></TextBlock>
             <Button  x:Name="Apply_Button" 
                          ToolTip="Aplicar alterações no gráfico." 
                          Margin="0,0,39,10" 
@@ -48,7 +52,7 @@
                          Click="Apply_Button_Click">
                 <StackPanel Orientation="Horizontal" Height="25">
                     <Image Source="/NavisApp;component/Resources/Check.png" Width="17" Margin="0,4,0,7" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="HighQuality" RenderOptions.EdgeMode="Aliased"  />
-                    <TextBlock VerticalAlignment="Center" FontWeight="Normal" Margin="0,6,0,6.5" Width="100"  FontSize="14" HorizontalAlignment="Center" UseLayoutRounding="False" TextAlignment="Center" Height="22.5"><Run Language="pt-br" Text="Aplicar"/></TextBlock>
+                    <TextBlock VerticalAlignment="Center" FontWeight="Normal" Margin="0" Width="100"  FontSize="14" UseLayoutRounding="False" TextAlignment="Center" Height="25" Foreground="White"><Run Language="pt-br" Text="Aplicar"/></TextBlock>
                 </StackPanel>
             </Button>
             <TextBlock 
@@ -56,12 +60,12 @@
                 TextAlignment="Center"
                 Height="25"
                 Width="213"
-                Foreground="#FF0D62AB"
+                Foreground="Black"
                 Margin="0,6,0,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top" 
                 RenderTransformOrigin="0.44,0.56"
-                FontWeight="Bold"/>
+                FontWeight="SemiBold"/>
             <TextBlock TextAlignment="Center" Width="134" Margin="0,82,0,0" HorizontalAlignment="Center" RenderTransformOrigin="0.47,-0.302" Height="25" VerticalAlignment="Top" Text="Cor"/>
         </Grid>
     </Border>
